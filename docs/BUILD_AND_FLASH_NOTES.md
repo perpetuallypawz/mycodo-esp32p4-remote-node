@@ -13,7 +13,8 @@ This repository is currently a scaffold.
 - A full ESP-IDF build was verified on 2026-05-03 for target `esp32p4`.
 - One small LVGL compatibility fix was needed during build verification: `LV_OPA_95` was replaced with `LV_OPA_90` in `main/ui_manager.c`.
 - The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
-- The firmware has not been flashed from this environment.
+- The firmware has not been flashed successfully from this environment yet.
+- The first hardware flash attempt on 2026-05-03 reached the board on `COM3`, identified an ESP32-P4 chip revision `v1.3`, and then stopped because the bootloader image requires chip revision range `v3.1 - v3.99`.
 
 Before treating the scaffold as board-ready firmware, flash the board and verify the boot screen on hardware.
 
@@ -78,6 +79,23 @@ On Linux or macOS, the port may look like:
 ```
 
 Use a USB cable that supports data. Some cables only provide power.
+
+For this specific board, start with:
+
+- LiPo battery disconnected.
+- Only USB-C power/data connected.
+- The `USB TO UART` port, not the other USB-C port.
+- No Raspberry Pi, sensors, relays, or external modules attached.
+
+If Windows still shows no COM port:
+
+- Try a different known data-capable USB-C cable.
+- Try a different USB port on the computer.
+- Reconnect to the `USB TO UART` port specifically.
+- Check whether the UART bridge driver is missing.
+- If needed, hold `BOOT`, tap `RESET`, then release `BOOT` after the flash tool starts connecting.
+
+If `idf.py flash` connects and identifies the chip but refuses to write due to a chip-revision range mismatch, stop changing cables and ports. At that point, the next step is to review the image or ESP-IDF configuration that set the minimum supported chip revision.
 
 ## Flash
 

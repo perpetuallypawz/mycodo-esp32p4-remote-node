@@ -21,3 +21,7 @@
 - Verified the first real ESP-IDF build for target `esp32p4` after activating the installed ESP-IDF 5.5.4 toolchain from `C:\Espressif`.
 - Fixed a one-line LVGL compatibility issue by replacing `LV_OPA_95` with `LV_OPA_90` in `main/ui_manager.c`.
 - Added the generated `dependencies.lock` file to pin managed component versions for reproducible ESP-IDF builds.
+- Attempted the first hardware flash test with the LiPo disconnected and the board powered through the `USB TO UART` port only.
+- Confirmed `idf.py flash` could auto-detect `COM3`, connect to the ESP32-P4, and identify the chip as revision `v1.3`.
+- The first real flash blocker is not the cable or COM port path; flashing stopped because the built bootloader requires chip revision range `v3.1 - v3.99`.
+- Updated the first-flash checklist and build notes with the safer USB-to-UART-only setup and the observed chip-revision blocker.

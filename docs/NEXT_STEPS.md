@@ -38,14 +38,17 @@ Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Source implemented and build-verified, waiting for first hardware flash verification.
+Status: Source implemented and build-verified, first hardware flash attempt reached the board but failed on chip-revision compatibility.
 
 - [x] Confirm the correct Waveshare display and touch driver path.
 - [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
 - [x] Show a simple boot/status screen.
 - [x] Show firmware version, node ID, and connection placeholders.
 - [x] Build the project from an ESP-IDF terminal. Verified on 2026-05-03 for target `esp32p4` after a one-line LVGL compatibility fix in `main/ui_manager.c`.
-- [ ] Flash the board and verify the screen comes up on hardware.
+- [ ] Flash the board and verify the screen comes up on hardware. First attempt on 2026-05-03 auto-detected `COM3`, connected to the ESP32-P4, and identified chip revision `v1.3`, but flashing stopped because the built bootloader requires chip revision range `v3.1 - v3.99`.
+- [x] Re-check the hardware setup: LiPo disconnected, `USB TO UART` port used, data-capable USB-C cable, and no extra peripherals attached.
+- [x] Confirm the port and basic download path work. `idf.py flash` reached the board on `COM3`.
+- [ ] Investigate the ESP-IDF or image configuration that is setting the minimum supported chip revision above this board's detected `v1.3`.
 
 Suggested commit message: `Add boot screen scaffold`
 
