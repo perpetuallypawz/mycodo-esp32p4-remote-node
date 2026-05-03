@@ -10,5 +10,13 @@ CONFIG_IDF_TARGET="esp32p4"
 CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y
 CONFIG_ESP32P4_REV_MIN_100=y
 
+# The 7-inch MIPI display path allocates full frame buffers from PSRAM.
+# Without PSRAM enabled, the Waveshare BSP panics during display startup
+# with "no memory for frame buffer" inside esp_lcd_new_panel_dpi().
+CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_HEX=y
+CONFIG_SPIRAM_SPEED_200M=y
+
 # Keep logs readable for early development.
 CONFIG_LOG_DEFAULT_LEVEL_INFO=y

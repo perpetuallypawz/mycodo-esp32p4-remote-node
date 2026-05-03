@@ -42,6 +42,8 @@ Known first successful flash result for this project:
 - Port: `COM3`
 - Chip detected: `ESP32-P4 revision v1.3`
 - Flash status: success after enabling support for ESP32-P4 revisions below `v3.0`
+- Runtime status: serial boot looks healthy after enabling the PSRAM settings required by the display stack
+- Display status: user visually confirmed the boot screen on the physical LCD
 
 ## Monitor
 
@@ -55,6 +57,10 @@ Expected early scaffold logs should mention:
 - Firmware version.
 - Board name.
 - UI initialization and placeholder managers starting.
+- PSRAM detection and memory test success.
+- `Display initialized`.
+- Touch detection.
+- `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`.
 
 ## Stop And Ask For Help If
 

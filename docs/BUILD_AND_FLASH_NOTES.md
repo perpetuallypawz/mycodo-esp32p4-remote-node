@@ -17,11 +17,12 @@ This repository is currently an early firmware scaffold with a working first dis
 - The project defaults now explicitly support the earlier ESP32-P4 silicon used by this board by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y` in `sdkconfig.defaults`.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
-- A later serial-monitor verification on 2026-05-03 captured a runtime panic during display startup instead of a clean app boot.
-- The current backtrace points at `bsp_display_lcd_init` in the managed Waveshare BSP component, followed by `_esp_error_check_failed` and `panic_abort`.
-- The boot screen still needs human visual confirmation on the LCD, but the serial logs currently suggest the display path is not stable yet.
+- The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.
+- The durable fix was to enable the required PSRAM settings in `sdkconfig.defaults`: `CONFIG_IDF_EXPERIMENTAL_FEATURES=y`, `CONFIG_SPIRAM=y`, `CONFIG_SPIRAM_MODE_HEX=y`, and `CONFIG_SPIRAM_SPEED_200M=y`.
+- A later serial-monitor verification on 2026-05-03 showed a clean runtime boot: PSRAM initialization succeeded, the Waveshare BSP reported `Display initialized`, touch was detected, the backlight was set, and `ui_manager` logged that the boot screen was initialized.
+- The user visually confirmed on 2026-05-03 that the boot screen appears on the physical Waveshare LCD, so the first display milestone is now verified both over serial and on hardware.
 
-Before treating the scaffold as board-ready firmware, investigate the display-init panic and then retry the serial monitor plus physical LCD check.
+Before treating the scaffold as board-ready firmware, keep the current display path stable while the next milestone adds Wi-Fi support.
 
 ## Required Tools
 
@@ -38,6 +39,8 @@ On this machine, a plain PowerShell session needed these ESP-IDF activation deta
 - `IDF_TOOLS_PATH=C:\Espressif`
 - ESP-IDF framework root: `C:\Espressif\frameworks\esp-idf-v5.5.4`
 - Python environment: `C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe`
+
+On this machine, calling the IDF framework's `export.ps1` directly was more reliable than relying on `Initialize-Idf.ps1`, because the older launcher was still pointing at a stale Python 3.13 environment.
 
 ## Set Target
 
@@ -145,6 +148,8 @@ If `monitor` fails with `Access is denied` on a valid COM port, check for a stal
 
 If the monitor finally connects but the startup output shows `Stack dump detected`, `_esp_error_check_failed`, or a backtrace into `bsp_display_lcd_init`, the problem has moved past USB/COM-port setup and into runtime display initialization.
 
+If the monitor instead shows PSRAM coming up, `Display initialized`, touch detection, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`, the serial side of the first display milestone is healthy and the next check is the physical LCD.
+
 ## Expected Early Scaffold Logs
 
 The first scaffold should eventually log:
@@ -157,9 +162,13 @@ The first scaffold should eventually log:
 
 Current captured startup result on 2026-05-03:
 
-- The boot does not currently look normal.
-- A captured monitor session reached a stack dump and panic during display startup.
-- The decoded backtrace includes `bsp_display_lcd_init`, `_esp_error_check_failed`, and `panic_abort`.
+- The boot now looks normal over serial.
+- 32 MB PSRAM is detected and passes the memory test.
+- The Waveshare BSP reports `Display initialized`.
+- Touch is detected at `0x5d`.
+- The backlight is set to `85%`.
+- `ui_manager` reports `Boot screen initialized with Waveshare BSP and LVGL`.
+- The user visually confirmed the boot screen on the physical LCD.
 
 If the board reboots repeatedly, disconnect attached output hardware and review the serial logs before continuing.
 

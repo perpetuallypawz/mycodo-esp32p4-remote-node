@@ -33,3 +33,9 @@
 - Retried clean serial monitor verification on `COM3` and confirmed the port problem was partly caused by stale `idf.py monitor` helper processes.
 - Captured startup output from a background monitor session and confirmed the current boot path is not healthy: the firmware reaches a stack dump and panic during display initialization.
 - The first real runtime backtrace now points at `bsp_display_lcd_init` in the managed Waveshare BSP component, followed by `_esp_error_check_failed` and `panic_abort`.
+- Investigated the exact display-init failure and confirmed the real root cause was `esp_lcd_new_panel_dpi(): no memory for frame buffer`, not a wrong Waveshare BSP call sequence.
+- Updated `sdkconfig.defaults` so the project enables the PSRAM settings the 7-inch MIPI display stack requires: `CONFIG_IDF_EXPERIMENTAL_FEATURES=y`, `CONFIG_SPIRAM=y`, `CONFIG_SPIRAM_MODE_HEX=y`, and `CONFIG_SPIRAM_SPEED_200M=y`.
+- Re-ran `idf.py fullclean`, `idf.py set-target esp32p4`, `idf.py reconfigure`, and `idf.py build` with the working `ESP-IDF v5.5.4` environment, and the build passed.
+- Reflashed the board on `COM3` and captured a clean runtime boot log showing PSRAM initialization, `Display initialized`, touch detection, backlight setup, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`.
+- Cleaned up the stale `idf.py` and `idf_monitor.py` helper processes after the timed monitor wrapper so `COM3` is free for the next hardware check.
+- Recorded the user's visual hardware confirmation that the boot screen appears correctly on the physical Waveshare LCD.

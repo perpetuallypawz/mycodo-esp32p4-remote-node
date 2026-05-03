@@ -26,7 +26,9 @@ Mycodo must not be installed on the ESP32-P4 board.
 - A first real display milestone using the Waveshare 7B BSP and LVGL.
 - A successful ESP-IDF build verification for target `esp32p4`.
 - A successful first hardware flash to the board on `COM3` after updating the project defaults to support the board's detected ESP32-P4 revision `v1.3`.
-- A captured serial-monitor session showing that the current runtime does not boot cleanly yet; the first real panic now points into display initialization in the Waveshare BSP.
+- A successful runtime serial-monitor verification after enabling the PSRAM settings required by the 7-inch display stack.
+- Captured logs showing PSRAM detection, successful Waveshare display initialization, touch detection, backlight setup, and boot-screen initialization.
+- User-confirmed visual verification that the boot screen appears on the physical Waveshare LCD.
 - A generated `dependencies.lock` file that pins the resolved managed component versions for reproducible builds.
 - Safe example configuration under `config/`.
 - MQTT topic notes.
@@ -53,6 +55,6 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Investigate the display-init panic, then retry the serial monitor and physical boot-screen check.
+Begin Wi-Fi manager implementation while keeping the working display boot path intact.
 
 After that, add Wi-Fi, then MQTT, then mock telemetry before connecting real sensors or outputs.

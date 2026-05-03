@@ -38,7 +38,7 @@ Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Source implemented, build-verified, flashed successfully, and serial-monitor verification reached a first real runtime failure in the display init path. Physical screen confirmation is still pending.
+Status: Source implemented, build-verified, flashed successfully, runtime-verified over serial, and visually verified on the physical Waveshare LCD by the user.
 
 - [x] Confirm the correct Waveshare display and touch driver path.
 - [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
@@ -47,12 +47,13 @@ Status: Source implemented, build-verified, flashed successfully, and serial-mon
 - [x] Build the project from an ESP-IDF terminal. Verified on 2026-05-03 for target `esp32p4` after a one-line LVGL compatibility fix in `main/ui_manager.c`.
 - [x] Build the image for this board's ESP32-P4 revision. On 2026-05-03, the project defaults were updated to support the detected `v1.3` chip by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y`.
 - [x] Flash the board. On 2026-05-03, `idf.py -p COM3 flash` completed successfully without using `--force`.
-- [ ] Verify the boot screen appears on the physical Waveshare display.
+- [x] Verify the boot screen appears on the physical Waveshare display. The user visually confirmed the boot screen on hardware on 2026-05-03.
 - [x] Re-check the hardware setup: LiPo disconnected, `USB TO UART` port used, data-capable USB-C cable, and no extra peripherals attached.
 - [x] Confirm the port and basic download path work. `idf.py flash` reached the board on `COM3`.
 - [x] Investigate the ESP-IDF or image configuration that is setting the minimum supported chip revision above this board's detected `v1.3`.
-- [x] Capture startup output from the serial monitor. A captured session on 2026-05-03 showed a stack dump and panic during display startup, with the backtrace pointing at `bsp_display_lcd_init` in the Waveshare BSP.
-- [ ] Investigate the runtime panic during display initialization before adding new features.
+- [x] Capture startup output from the serial monitor. The first captured session on 2026-05-03 showed a stack dump and panic during display startup, and a later captured session on the same day showed a clean runtime boot after the PSRAM fix.
+- [x] Investigate the runtime panic during display initialization before adding new features. The exact failure was `esp_lcd_new_panel_dpi(): no memory for frame buffer`, and the durable fix was to enable PSRAM in `sdkconfig.defaults`.
+- [x] Re-run runtime verification after the display-memory fix. A clean `COM3` monitor session now shows 32 MB PSRAM detected at 200 MHz, `Display initialized`, `Touch 0x5d found`, backlight set, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`.
 
 Suggested commit message: `Add boot screen scaffold`
 

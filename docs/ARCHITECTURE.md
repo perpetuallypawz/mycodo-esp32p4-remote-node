@@ -74,7 +74,9 @@ More topic notes live in `config/mqtt_topics.md`.
 Current status:
 
 - A basic boot/status screen is implemented with the Waveshare 7B BSP and LVGL.
+- The boot screen has been visually verified by the user on the physical Waveshare LCD.
 - Touch input is initialized by the BSP, but no touch actions are wired into the app yet.
+- The current display path uses the BSP's standard `bsp_display_start()` flow, and the 1024x600 MIPI display stack depends on PSRAM being enabled for frame-buffer allocation.
 
 Planned touchscreen pages:
 

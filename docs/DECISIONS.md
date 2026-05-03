@@ -117,3 +117,25 @@ Reasons:
 Tradeoff:
 
 - Earlier-silicon support lowers the default CPU-frequency selection to the safer non-experimental path for this chip family, so future performance tuning should happen only after the basic firmware path is stable on hardware.
+
+## 2026-05-03: Enable PSRAM In Project Defaults For The 7-Inch Display Stack
+
+Decision: Keep the PSRAM settings required by the Waveshare 7-inch MIPI display path in `sdkconfig.defaults` instead of relying on a one-off local `sdkconfig`.
+
+Reasons:
+
+- The exact runtime failure during display startup was `esp_lcd_new_panel_dpi(): no memory for frame buffer`.
+- The Waveshare BSP eventually calls the ESP-IDF MIPI DSI panel driver, which allocates full frame buffers from PSRAM.
+- Espressif's own ESP32-P4 display examples also enable PSRAM for similar panel paths.
+- Putting the PSRAM settings in `sdkconfig.defaults` makes the fix durable for future clean builds and future sessions.
+
+Settings:
+
+- `CONFIG_IDF_EXPERIMENTAL_FEATURES=y`
+- `CONFIG_SPIRAM=y`
+- `CONFIG_SPIRAM_MODE_HEX=y`
+- `CONFIG_SPIRAM_SPEED_200M=y`
+
+Tradeoff:
+
+- The display path now depends on external PSRAM being available and configured correctly, so future display regressions should check PSRAM logs early.
