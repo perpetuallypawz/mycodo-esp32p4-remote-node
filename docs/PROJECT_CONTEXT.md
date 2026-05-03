@@ -23,6 +23,7 @@ Mycodo must not be installed on the ESP32-P4 board.
 - A clean ESP-IDF repository scaffold.
 - Beginner-friendly folder structure.
 - Modular placeholder C source files under `main/`.
+- A first real display milestone using the Waveshare 7B BSP and LVGL.
 - Safe example configuration under `config/`.
 - MQTT topic notes.
 - Sample MQTT JSON payloads.
@@ -32,11 +33,11 @@ Mycodo must not be installed on the ESP32-P4 board.
 
 ## What Is Stubbed Or Simulated
 
-The current source files are placeholders only.
+Most current source files are still placeholders.
 
 - Wi-Fi is not implemented.
 - MQTT is not implemented.
-- LCD and touch UI are not implemented.
+- Only the first boot/status screen is implemented. Interactive touch pages are not implemented yet.
 - Sensors are not implemented.
 - Output control is not implemented.
 - Persistent storage is not implemented.
@@ -48,6 +49,6 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Add a minimal boot screen and serial startup flow that confirms the firmware starts cleanly on the ESP32-P4 target without enabling real hardware outputs.
+Run the first real ESP-IDF build and flash test from an ESP-IDF terminal so the new boot screen can be verified on hardware.
 
 After that, add Wi-Fi, then MQTT, then mock telemetry before connecting real sensors or outputs.

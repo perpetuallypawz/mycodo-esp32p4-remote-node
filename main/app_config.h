@@ -15,6 +15,10 @@
 #define APP_DEFAULT_NODE_ID "remote-node-01"
 #define APP_MQTT_TOPIC_PREFIX "mycodo/remote-node-01"
 
+/* First display milestone settings. */
+#define APP_DISPLAY_BOOT_BRIGHTNESS_PERCENT 85
+#define APP_DISPLAY_UI_LOCK_TIMEOUT_MS 1000
+
 /* Placeholder loop timing while real tasks are not implemented. */
 #define APP_MAIN_LOOP_DELAY_MS 5000
 

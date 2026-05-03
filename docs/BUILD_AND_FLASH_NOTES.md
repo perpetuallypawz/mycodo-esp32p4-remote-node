@@ -7,9 +7,10 @@ This file collects beginner-friendly build, flash, and serial monitor notes for 
 This repository is currently a scaffold.
 
 - ESP-IDF build files exist.
-- Placeholder C source files exist.
+- Modular C source files exist, including a first boot/status screen milestone.
 - The project targets `esp32p4`.
-- A full build has not been verified yet in this environment.
+- The display milestone now depends on `main/idf_component.yml` downloading the Waveshare 7B BSP through the ESP-IDF Component Manager.
+- A full build has not been verified yet in this environment because `idf.py` is still not available in this shell.
 - The firmware has not been flashed from this environment.
 
 Before treating the scaffold as board-ready firmware, run a real ESP-IDF build on a machine with ESP-IDF installed and active.

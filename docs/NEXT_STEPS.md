@@ -37,12 +37,14 @@ Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Not started.
+Status: Implemented in source, waiting for first hardware build/flash verification.
 
-- [ ] Confirm the correct Waveshare display and touch driver path.
-- [ ] Add LVGL as a managed dependency or vendor-supported component.
-- [ ] Show a simple boot/status screen.
-- [ ] Show firmware version, node ID, and connection placeholders.
+- [x] Confirm the correct Waveshare display and touch driver path.
+- [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
+- [x] Show a simple boot/status screen.
+- [x] Show firmware version, node ID, and connection placeholders.
+- [ ] Build the project from an ESP-IDF terminal.
+- [ ] Flash the board and verify the screen comes up on hardware.
 
 Suggested commit message: `Add boot screen scaffold`
 

@@ -88,3 +88,17 @@ Reasons:
 Tradeoff:
 
 - Some tasks may produce documentation-only commits, but that is acceptable when the docs are the persistent project memory.
+
+## 2026-05-03: Use The Exact Waveshare 7B BSP Component
+
+Decision: Use `waveshare/esp32_p4_wifi6_touch_lcd_7b` for the first display milestone instead of building on the more generic `waveshare/esp32_p4_platform` component.
+
+Reasons:
+
+- The project targets one exact board: `Waveshare ESP32-P4-WIFI6-Touch-LCD-7B`.
+- The board-specific BSP already packages the correct display, touch, and LVGL port dependencies for this model.
+- Using the exact board BSP lowers the chance of mismatched panel or touch configuration during the first boot-screen milestone.
+
+Tradeoff:
+
+- The code is more tightly matched to this board, so moving to different Waveshare ESP32-P4 hardware later would require a BSP swap.

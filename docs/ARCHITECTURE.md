@@ -71,7 +71,12 @@ More topic notes live in `config/mqtt_topics.md`.
 
 ## UI Structure
 
-The UI is not implemented yet. The planned touchscreen pages are:
+Current status:
+
+- A basic boot/status screen is implemented with the Waveshare 7B BSP and LVGL.
+- Touch input is initialized by the BSP, but no touch actions are wired into the app yet.
+
+Planned touchscreen pages:
 
 - Boot/status page.
 - Wi-Fi and MQTT connection page.
@@ -111,7 +116,7 @@ touch input -> ui_manager -> safety_manager/control_manager when local control i
 | `app_config.h` | Safe compile-time constants |
 | `app_state.*` | Shared status between managers |
 | `mqtt_client_manager.*` | Future MQTT connection and message handling |
-| `ui_manager.*` | Future LCD/touch UI |
+| `ui_manager.*` | Current boot/status screen and future LCD/touch UI |
 | `sensor_manager.*` | Future sensor reads |
 | `control_manager.*` | Future output control |
 | `storage_manager.*` | Future non-secret persistent settings |

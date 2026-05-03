@@ -2,12 +2,13 @@
 
 Beginner-friendly ESP-IDF firmware scaffold for a Waveshare ESP32-P4-WIFI6-Touch-LCD-7B board that will eventually act as a remote node for a Raspberry Pi 4B running Mycodo.
 
-This first version is only a clean project scaffold. It does not contain full Wi-Fi, MQTT, sensor, display, or control logic yet.
+This repo now includes the first real display milestone, but it does not contain full Wi-Fi, MQTT, sensor, or output-control logic yet.
 
 ## 1. What This Firmware Does
 
 This project is intended to become firmware for an ESP32-P4 remote node. In the finished firmware, the board should:
 
+- Show a basic boot/status screen on the Waveshare 7-inch display using the board BSP and LVGL.
 - Read sensor values from hardware connected to the ESP32-P4 board.
 - Send telemetry to Mycodo through MQTT.
 - Receive MQTT commands from Mycodo.
@@ -26,7 +27,7 @@ This scaffold does not yet:
 - Connect to an MQTT broker.
 - Read real sensors.
 - Control real outputs.
-- Draw a real touch UI.
+- Provide interactive touch controls beyond the basic boot/status screen.
 - Store real configuration in NVS.
 - Include real Wi-Fi passwords, MQTT passwords, tokens, or private credentials.
 
@@ -58,6 +59,58 @@ Typical future flow:
 - The ESP32-P4 replies with acknowledgements such as `mycodo/remote-node-01/status/ack`.
 
 See [config/mqtt_topics.md](config/mqtt_topics.md) and [docs/mycodo_mqtt_setup.md](docs/mycodo_mqtt_setup.md).
+
+## Repository Scaffold Verification
+
+The scaffold is complete and organized in a way that makes later follow-up changes easier to keep focused.
+
+### Folders
+
+- `main/`: firmware source code, split by responsibility.
+- `config/`: safe example configuration and topic planning files.
+- `docs/`: project memory, setup notes, architecture, safety notes, and milestone tracking.
+- `examples/`: sample MQTT payloads for later testing with Mosquitto and Mycodo.
+
+### Root Files
+
+- `README.md`: beginner-friendly overview, setup guide, and scaffold map.
+- `.gitignore`: ignores ESP-IDF build output and private local config files.
+- `CMakeLists.txt`: top-level ESP-IDF project entry.
+- `sdkconfig.defaults`: default target and build settings for new local builds.
+- `idf_component.yml`: repo-level note explaining managed-component setup.
+- `AGENTS.md`: repo-specific instructions for future Codex sessions.
+
+### Main Firmware Files
+
+- `main/CMakeLists.txt`: registers the main firmware component.
+- `main/idf_component.yml`: managed dependencies for the firmware component, including the Waveshare 7B BSP.
+- `main/main.c`: starts each manager and runs the main loop.
+- `main/app_config.h`: safe compile-time constants such as node ID and display defaults.
+- `main/app_state.h` and `main/app_state.c`: shared runtime state used by the managers.
+- `main/ui_manager.h` and `main/ui_manager.c`: boot screen and later touchscreen UI logic.
+- `main/mqtt_client_manager.h` and `main/mqtt_client_manager.c`: future MQTT connection and message handling.
+- `main/sensor_manager.h` and `main/sensor_manager.c`: future sensor reads and telemetry data preparation.
+- `main/control_manager.h` and `main/control_manager.c`: future output-control behavior.
+- `main/storage_manager.h` and `main/storage_manager.c`: future non-secret local settings storage.
+- `main/safety_manager.h` and `main/safety_manager.c`: future fail-safe rules and safety checks.
+- `main/log_manager.h` and `main/log_manager.c`: startup logging and later structured logs.
+
+### Config, Docs, And Examples
+
+- `config/example_config.json`: safe placeholder settings with no real credentials.
+- `config/mqtt_topics.md`: planned topic names and directions.
+- `docs/PROJECT_CONTEXT.md`: plain-English project summary and current milestone state.
+- `docs/ARCHITECTURE.md`: system architecture, UI plan, and module map.
+- `docs/DECISIONS.md`: technical decisions and why they were made.
+- `docs/NEXT_STEPS.md`: beginner-friendly milestone checklist.
+- `docs/CHANGELOG.md`: project change history.
+- `docs/BUILD_AND_FLASH_NOTES.md`: build, flash, and monitor notes.
+- `docs/first_flash_checklist.md`: hardware-safe first flash checklist.
+- `docs/hardware_safety_notes.md`: wiring and output safety reminders.
+- `docs/mycodo_mqtt_setup.md`: MQTT integration planning for the Raspberry Pi and Mycodo.
+- `examples/sample_mqtt_messages/telemetry_example.json`: example telemetry payload.
+- `examples/sample_mqtt_messages/fan_command_example.json`: example command payload.
+- `examples/sample_mqtt_messages/control_ack_example.json`: example acknowledgement payload.
 
 ## 4. Install ESP-IDF
 
@@ -213,13 +266,14 @@ This repo currently contains:
 - A beginner-friendly folder layout.
 - ESP-IDF CMake starter files.
 - Modular placeholder source files.
+- A real Waveshare BSP + LVGL boot screen milestone.
 - Safe example configuration.
 - MQTT topic notes.
 - First-flash and safety docs.
 - Persistent project memory docs for future Codex sessions.
 - Dedicated build and flash notes.
 
-It does not yet contain production firmware logic.
+It does not yet contain production Wi-Fi, MQTT, sensor, or control logic.
 
 ## Project Memory For Future Sessions
 

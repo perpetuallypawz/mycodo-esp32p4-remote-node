@@ -11,6 +11,9 @@
 - Added Git-friendly milestone guidance and suggested commit messages for future major steps.
 - Checked `git --version` again from this environment; Git is still not available on PATH, so repository initialization, staging, and the first commit could not be completed here.
 - Git later became available on PATH, and the repository was initialized on the `main` branch.
-- The first commit is still pending because `git user.name` and `git user.email` are not configured in this environment.
 - Configured repo-local Git identity for this repository only as `Ashley Paugh <codex@local>`.
 - Prepared the repository for its first commit, `Initial repo scaffold`.
+- Created the first Git commit: `Initial repo scaffold`.
+- Added the first real UI milestone: a Waveshare BSP + LVGL boot/status screen for the ESP32-P4-WIFI6-Touch-LCD-7B board.
+- Added `main/idf_component.yml` so the firmware component pulls in the exact board-specific Waveshare BSP dependency.
+- Updated the README and project-memory docs to verify the scaffold, explain file purposes, and record the new boot-screen milestone.

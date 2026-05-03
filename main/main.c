@@ -2,8 +2,8 @@
  * Application entry point.
  *
  * This file should stay small. Its job is to start each manager in a clear
- * order and run the main firmware loop. Real Wi-Fi, MQTT, sensors, outputs,
- * and display behavior will live in the manager modules.
+ * order and run the main firmware loop. Wi-Fi, MQTT, sensors, outputs,
+ * and most UI behavior still live in dedicated manager modules.
  */
 
 #include "app_config.h"
@@ -48,7 +48,7 @@ void app_main(void)
         ESP_ERROR_CHECK(sensor_manager_read_placeholder(&state));
         ESP_ERROR_CHECK(control_manager_apply_outputs_placeholder(&state));
         ESP_ERROR_CHECK(mqtt_client_manager_publish_telemetry_placeholder(&state));
-        ESP_ERROR_CHECK(ui_manager_show_status_placeholder(&state));
+        ESP_ERROR_CHECK(ui_manager_update(&state));
 
         vTaskDelay(pdMS_TO_TICKS(APP_MAIN_LOOP_DELAY_MS));
     }

@@ -1,0 +1,13 @@
+# Managed dependencies for the main firmware component.
+#
+# This first UI milestone uses the exact Waveshare board support package for
+# the ESP32-P4-WIFI6-Touch-LCD-7B board. That BSP pulls in the display, touch,
+# and LVGL port components needed for the boot screen.
+
+targets:
+  - esp32p4
+
+dependencies:
+  idf: ">=5.3.1"
+  waveshare/esp32_p4_wifi6_touch_lcd_7b:
+    version: "^1.0.2"

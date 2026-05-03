@@ -1,12 +1,9 @@
-# ESP-IDF managed component manifest placeholder.
+# Repository-level ESP-IDF manifest note.
 #
-# This scaffold does not need external managed components yet.
-# When the firmware grows, this file can list dependencies such as display,
-# touch, sensor, or helper libraries.
-#
-# Note: ESP-IDF commonly resolves component manifests from component folders.
-# If a future ESP-IDF version or dependency expects that layout, we can add a
-# matching main/idf_component.yml when dependencies are introduced.
+# This file exists because the project scaffold intentionally includes a root
+# `idf_component.yml` for beginner visibility. The active build dependency
+# manifest for the firmware lives in `main/idf_component.yml`, because ESP-IDF
+# resolves managed dependencies per component.
 
 dependencies:
   idf: ">=5.3.1"
