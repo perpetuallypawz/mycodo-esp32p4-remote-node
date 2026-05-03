@@ -25,3 +25,8 @@
 - Confirmed `idf.py flash` could auto-detect `COM3`, connect to the ESP32-P4, and identify the chip as revision `v1.3`.
 - The first real flash blocker is not the cable or COM port path; flashing stopped because the built bootloader requires chip revision range `v3.1 - v3.99`.
 - Updated the first-flash checklist and build notes with the safer USB-to-UART-only setup and the observed chip-revision blocker.
+- Confirmed the installed toolchain version is `ESP-IDF v5.5.4`.
+- Updated `sdkconfig.defaults` so the project explicitly supports earlier ESP32-P4 silicon, including this board's detected revision `v1.3`, by enabling `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y`.
+- Re-ran `idf.py fullclean`, `idf.py set-target esp32p4`, `idf.py reconfigure`, and `idf.py build`, and the build passed with the revision-compatible settings.
+- Successfully flashed the revision-compatible image to the board on `COM3` without using `--force`.
+- Confirmed the next remaining hardware check is visual/runtime verification: the display still needs human confirmation, and one later `monitor` attempt found stale monitor processes holding `COM3`.

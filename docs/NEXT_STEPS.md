@@ -38,17 +38,20 @@ Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Source implemented and build-verified, first hardware flash attempt reached the board but failed on chip-revision compatibility.
+Status: Source implemented, build-verified, and flashed successfully to the board after enabling support for earlier ESP32-P4 silicon. Physical screen confirmation is still pending.
 
 - [x] Confirm the correct Waveshare display and touch driver path.
 - [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
 - [x] Show a simple boot/status screen.
 - [x] Show firmware version, node ID, and connection placeholders.
 - [x] Build the project from an ESP-IDF terminal. Verified on 2026-05-03 for target `esp32p4` after a one-line LVGL compatibility fix in `main/ui_manager.c`.
-- [ ] Flash the board and verify the screen comes up on hardware. First attempt on 2026-05-03 auto-detected `COM3`, connected to the ESP32-P4, and identified chip revision `v1.3`, but flashing stopped because the built bootloader requires chip revision range `v3.1 - v3.99`.
+- [x] Build the image for this board's ESP32-P4 revision. On 2026-05-03, the project defaults were updated to support the detected `v1.3` chip by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y`.
+- [x] Flash the board. On 2026-05-03, `idf.py -p COM3 flash` completed successfully without using `--force`.
+- [ ] Verify the boot screen appears on the physical Waveshare display.
 - [x] Re-check the hardware setup: LiPo disconnected, `USB TO UART` port used, data-capable USB-C cable, and no extra peripherals attached.
 - [x] Confirm the port and basic download path work. `idf.py flash` reached the board on `COM3`.
-- [ ] Investigate the ESP-IDF or image configuration that is setting the minimum supported chip revision above this board's detected `v1.3`.
+- [x] Investigate the ESP-IDF or image configuration that is setting the minimum supported chip revision above this board's detected `v1.3`.
+- [ ] Capture a clean serial monitor session after reset. A later `monitor` attempt found stale monitor processes holding `COM3`, so display/runtime confirmation still needs one clean manual monitor pass.
 
 Suggested commit message: `Add boot screen scaffold`
 

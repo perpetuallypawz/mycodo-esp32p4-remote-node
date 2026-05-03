@@ -21,6 +21,9 @@ Use this checklist before flashing firmware to the Waveshare ESP32-P4 board.
 - Go to the repository root.
 - Run `idf.py set-target esp32p4`.
 - Run `idf.py build`.
+- If the board reports ESP32-P4 revision `v1.3` or another revision below `v3.0`, make sure the project defaults still include:
+  - `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y`
+  - `CONFIG_ESP32P4_REV_MIN_100=y`
 
 ## Flash
 
@@ -34,6 +37,12 @@ idf.py -p COM_PORT flash
 
 If `idf.py flash` auto-detects a serial port, connects to the board, and identifies the chip, then the cable, USB-to-UART port, and basic download mode are working.
 
+Known first successful flash result for this project:
+
+- Port: `COM3`
+- Chip detected: `ESP32-P4 revision v1.3`
+- Flash status: success after enabling support for ESP32-P4 revisions below `v3.0`
+
 ## Monitor
 
 ```powershell
@@ -45,7 +54,7 @@ Expected early scaffold logs should mention:
 - Application name.
 - Firmware version.
 - Board name.
-- Placeholder managers starting.
+- UI initialization and placeholder managers starting.
 
 ## Stop And Ask For Help If
 
@@ -53,6 +62,7 @@ Expected early scaffold logs should mention:
 - You suspect the cable is charge-only or the wrong USB-C port is being used.
 - Flashing fails until the board is manually put into download mode with `BOOT` + `RESET`.
 - The flash tool connects to the board but refuses to write because the built image requires a different chip revision.
+- `monitor` reports `Access is denied` on a valid COM port, which usually means another stale serial-monitor process still has the port open.
 - The board gets hot.
 - The board repeatedly disconnects from USB.
 - The serial monitor shows boot loops.

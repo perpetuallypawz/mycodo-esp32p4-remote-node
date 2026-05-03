@@ -4,5 +4,11 @@
 # Target the ESP32-P4 family used by the Waveshare board.
 CONFIG_IDF_TARGET="esp32p4"
 
+# Support the earlier ESP32-P4 silicon used by this Waveshare board.
+# The detected chip revision is v1.3, so the project must target the
+# "<3.0" silicon family and accept chips starting from v1.0.
+CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y
+CONFIG_ESP32P4_REV_MIN_100=y
+
 # Keep logs readable for early development.
 CONFIG_LOG_DEFAULT_LEVEL_INFO=y

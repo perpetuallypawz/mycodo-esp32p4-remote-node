@@ -4,19 +4,22 @@ This file collects beginner-friendly build, flash, and serial monitor notes for 
 
 ## Current Build Status
 
-This repository is currently a scaffold.
+This repository is currently an early firmware scaffold with a working first display milestone.
 
 - ESP-IDF build files exist.
 - Modular C source files exist, including a first boot/status screen milestone.
 - The project targets `esp32p4`.
 - The display milestone now depends on `main/idf_component.yml` downloading the Waveshare 7B BSP through the ESP-IDF Component Manager.
 - A full ESP-IDF build was verified on 2026-05-03 for target `esp32p4`.
+- The verified toolchain version is `ESP-IDF v5.5.4`.
 - One small LVGL compatibility fix was needed during build verification: `LV_OPA_95` was replaced with `LV_OPA_90` in `main/ui_manager.c`.
 - The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
-- The firmware has not been flashed successfully from this environment yet.
-- The first hardware flash attempt on 2026-05-03 reached the board on `COM3`, identified an ESP32-P4 chip revision `v1.3`, and then stopped because the bootloader image requires chip revision range `v3.1 - v3.99`.
+- The project defaults now explicitly support the earlier ESP32-P4 silicon used by this board by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y` in `sdkconfig.defaults`.
+- A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
+- The board on `COM3` reports `ESP32-P4 revision v1.3`.
+- The boot screen still needs human visual confirmation on the LCD, and a clean follow-up serial monitor session is still useful for runtime confirmation.
 
-Before treating the scaffold as board-ready firmware, flash the board and verify the boot screen on hardware.
+Before treating the scaffold as board-ready firmware, verify the boot screen on hardware and capture one clean serial monitor session after reset.
 
 ## Required Tools
 
@@ -61,6 +64,9 @@ If this fails, check:
 - ESP-IDF is installed.
 - The ESP-IDF environment is active in the current terminal.
 - The target is set to `esp32p4`.
+- `sdkconfig.defaults` still includes the earlier-silicon settings for this board:
+  - `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y`
+  - `CONFIG_ESP32P4_REV_MIN_100=y`
 - Any future managed components have downloaded correctly.
 
 ## Find The Serial Port
@@ -95,7 +101,7 @@ If Windows still shows no COM port:
 - Check whether the UART bridge driver is missing.
 - If needed, hold `BOOT`, tap `RESET`, then release `BOOT` after the flash tool starts connecting.
 
-If `idf.py flash` connects and identifies the chip but refuses to write due to a chip-revision range mismatch, stop changing cables and ports. At that point, the next step is to review the image or ESP-IDF configuration that set the minimum supported chip revision.
+If `idf.py flash` connects and identifies the chip but refuses to write due to a chip-revision range mismatch, stop changing cables and ports. At that point, review the image or ESP-IDF configuration that set the minimum supported chip revision. For this project, the durable fix was to keep earlier-silicon support in `sdkconfig.defaults` rather than forcing the flash.
 
 ## Flash
 
@@ -109,6 +115,14 @@ Example:
 
 ```powershell
 idf.py -p COM5 flash
+```
+
+Verified first-hardware-flash result for this project:
+
+```text
+Port: COM3
+Chip: ESP32-P4 revision v1.3
+Result: Flash succeeded after enabling support for ESP32-P4 revisions below v3.0
 ```
 
 ## Monitor Logs
@@ -125,6 +139,8 @@ To leave the monitor:
 Ctrl+]
 ```
 
+If `monitor` fails with `Access is denied` on a valid COM port, check for a stale `idf.py monitor` or `idf_monitor.py` process still holding the serial port open.
+
 ## Expected Early Scaffold Logs
 
 The first scaffold should eventually log:
@@ -133,7 +149,7 @@ The first scaffold should eventually log:
 - Firmware version.
 - Board name.
 - Node ID.
-- Placeholder manager startup messages.
+- UI initialization messages and placeholder manager startup messages.
 
 If the board reboots repeatedly, disconnect attached output hardware and review the serial logs before continuing.
 

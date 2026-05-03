@@ -102,3 +102,18 @@ Reasons:
 Tradeoff:
 
 - The code is more tightly matched to this board, so moving to different Waveshare ESP32-P4 hardware later would require a BSP swap.
+
+## 2026-05-03: Support Earlier ESP32-P4 Silicon In Project Defaults
+
+Decision: Keep the project defaults compatible with ESP32-P4 revisions below `v3.0`, specifically the board detected here as revision `v1.3`.
+
+Reasons:
+
+- The first hardware flash test confirmed this Waveshare board reports `ESP32-P4 revision v1.3`.
+- The default ESP-IDF revision selection for ESP32-P4 can target newer `v3.x` silicon, which produces images that the board refuses to flash.
+- Using durable settings in `sdkconfig.defaults` is safer and more repeatable than relying on a one-off local `sdkconfig` edit.
+- The project should build and flash for the real board without using `--force`.
+
+Tradeoff:
+
+- Earlier-silicon support lowers the default CPU-frequency selection to the safer non-experimental path for this chip family, so future performance tuning should happen only after the basic firmware path is stable on hardware.
