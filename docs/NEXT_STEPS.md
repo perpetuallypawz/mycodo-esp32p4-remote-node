@@ -38,7 +38,7 @@ Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Source implemented, build-verified, and flashed successfully to the board after enabling support for earlier ESP32-P4 silicon. Physical screen confirmation is still pending.
+Status: Source implemented, build-verified, flashed successfully, and serial-monitor verification reached a first real runtime failure in the display init path. Physical screen confirmation is still pending.
 
 - [x] Confirm the correct Waveshare display and touch driver path.
 - [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
@@ -51,7 +51,8 @@ Status: Source implemented, build-verified, and flashed successfully to the boar
 - [x] Re-check the hardware setup: LiPo disconnected, `USB TO UART` port used, data-capable USB-C cable, and no extra peripherals attached.
 - [x] Confirm the port and basic download path work. `idf.py flash` reached the board on `COM3`.
 - [x] Investigate the ESP-IDF or image configuration that is setting the minimum supported chip revision above this board's detected `v1.3`.
-- [ ] Capture a clean serial monitor session after reset. A later `monitor` attempt found stale monitor processes holding `COM3`, so display/runtime confirmation still needs one clean manual monitor pass.
+- [x] Capture startup output from the serial monitor. A captured session on 2026-05-03 showed a stack dump and panic during display startup, with the backtrace pointing at `bsp_display_lcd_init` in the Waveshare BSP.
+- [ ] Investigate the runtime panic during display initialization before adding new features.
 
 Suggested commit message: `Add boot screen scaffold`
 

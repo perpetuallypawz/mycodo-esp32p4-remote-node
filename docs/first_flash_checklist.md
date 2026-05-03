@@ -63,6 +63,7 @@ Expected early scaffold logs should mention:
 - Flashing fails until the board is manually put into download mode with `BOOT` + `RESET`.
 - The flash tool connects to the board but refuses to write because the built image requires a different chip revision.
 - `monitor` reports `Access is denied` on a valid COM port, which usually means another stale serial-monitor process still has the port open.
+- The monitor connects but then shows `Stack dump detected`, `_esp_error_check_failed`, or a backtrace involving `bsp_display_lcd_init`.
 - The board gets hot.
 - The board repeatedly disconnects from USB.
 - The serial monitor shows boot loops.

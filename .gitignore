@@ -39,3 +39,7 @@ config/*private*.json
 *.bin
 *.elf
 *.map
+
+# Temporary serial monitor captures
+monitor_*.out
+monitor_*.err

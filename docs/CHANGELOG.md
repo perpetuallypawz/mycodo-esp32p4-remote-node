@@ -30,3 +30,6 @@
 - Re-ran `idf.py fullclean`, `idf.py set-target esp32p4`, `idf.py reconfigure`, and `idf.py build`, and the build passed with the revision-compatible settings.
 - Successfully flashed the revision-compatible image to the board on `COM3` without using `--force`.
 - Confirmed the next remaining hardware check is visual/runtime verification: the display still needs human confirmation, and one later `monitor` attempt found stale monitor processes holding `COM3`.
+- Retried clean serial monitor verification on `COM3` and confirmed the port problem was partly caused by stale `idf.py monitor` helper processes.
+- Captured startup output from a background monitor session and confirmed the current boot path is not healthy: the firmware reaches a stack dump and panic during display initialization.
+- The first real runtime backtrace now points at `bsp_display_lcd_init` in the managed Waveshare BSP component, followed by `_esp_error_check_failed` and `panic_abort`.

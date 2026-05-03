@@ -17,9 +17,11 @@ This repository is currently an early firmware scaffold with a working first dis
 - The project defaults now explicitly support the earlier ESP32-P4 silicon used by this board by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y` in `sdkconfig.defaults`.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
-- The boot screen still needs human visual confirmation on the LCD, and a clean follow-up serial monitor session is still useful for runtime confirmation.
+- A later serial-monitor verification on 2026-05-03 captured a runtime panic during display startup instead of a clean app boot.
+- The current backtrace points at `bsp_display_lcd_init` in the managed Waveshare BSP component, followed by `_esp_error_check_failed` and `panic_abort`.
+- The boot screen still needs human visual confirmation on the LCD, but the serial logs currently suggest the display path is not stable yet.
 
-Before treating the scaffold as board-ready firmware, verify the boot screen on hardware and capture one clean serial monitor session after reset.
+Before treating the scaffold as board-ready firmware, investigate the display-init panic and then retry the serial monitor plus physical LCD check.
 
 ## Required Tools
 
@@ -141,6 +143,8 @@ Ctrl+]
 
 If `monitor` fails with `Access is denied` on a valid COM port, check for a stale `idf.py monitor` or `idf_monitor.py` process still holding the serial port open.
 
+If the monitor finally connects but the startup output shows `Stack dump detected`, `_esp_error_check_failed`, or a backtrace into `bsp_display_lcd_init`, the problem has moved past USB/COM-port setup and into runtime display initialization.
+
 ## Expected Early Scaffold Logs
 
 The first scaffold should eventually log:
@@ -150,6 +154,12 @@ The first scaffold should eventually log:
 - Board name.
 - Node ID.
 - UI initialization messages and placeholder manager startup messages.
+
+Current captured startup result on 2026-05-03:
+
+- The boot does not currently look normal.
+- A captured monitor session reached a stack dump and panic during display startup.
+- The decoded backtrace includes `bsp_display_lcd_init`, `_esp_error_check_failed`, and `panic_abort`.
 
 If the board reboots repeatedly, disconnect attached output hardware and review the serial logs before continuing.
 
