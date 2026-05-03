@@ -1,0 +1,28 @@
+{
+  "notes": [
+    "This file is safe to commit because it uses placeholder values only.",
+    "Create config/local_config.json for real local settings and keep it private."
+  ],
+  "node": {
+    "id": "remote-node-01",
+    "location": "example grow tent"
+  },
+  "wifi": {
+    "ssid": "YOUR_WIFI_NAME",
+    "password": "YOUR_WIFI_PASSWORD_DO_NOT_COMMIT_REAL_VALUES"
+  },
+  "mqtt": {
+    "host": "raspberrypi.local",
+    "port": 1883,
+    "username": "YOUR_MQTT_USERNAME_IF_USED",
+    "password": "YOUR_MQTT_PASSWORD_DO_NOT_COMMIT_REAL_VALUES",
+    "base_topic": "mycodo/remote-node-01"
+  },
+  "telemetry": {
+    "publish_interval_seconds": 30
+  },
+  "safety": {
+    "fail_safe_outputs_off": true,
+    "command_timeout_seconds": 120
+  }
+}

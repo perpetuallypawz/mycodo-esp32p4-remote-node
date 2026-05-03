@@ -1,0 +1,9 @@
+{
+  "schema": "mycodo.remote_node.command.fan.v1",
+  "command_id": "example-command-001",
+  "node_id": "remote-node-01",
+  "fan_id": "fan_1",
+  "enabled": true,
+  "speed_percent": 60,
+  "timeout_seconds": 120
+}

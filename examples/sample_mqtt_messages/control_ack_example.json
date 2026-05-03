@@ -1,0 +1,11 @@
+{
+  "schema": "mycodo.remote_node.status.ack.v1",
+  "command_id": "example-command-001",
+  "node_id": "remote-node-01",
+  "accepted": true,
+  "message": "Fan command accepted by placeholder example.",
+  "applied_outputs": {
+    "fan_1_enabled": true,
+    "fan_1_speed_percent": 60
+  }
+}

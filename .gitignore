@@ -1,0 +1,41 @@
+# ESP-IDF build output
+build/
+sdkconfig
+sdkconfig.old
+
+# ESP-IDF managed components are downloaded/generated locally.
+managed_components/
+
+# CMake and Ninja generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+*.ninja
+
+# Local editor and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Private local configuration and secrets
+.env
+.env.*
+config/local_config.json
+config/secrets.json
+config/*secret*.json
+config/*private*.json
+
+# Firmware outputs
+*.bin
+*.elf
+*.map

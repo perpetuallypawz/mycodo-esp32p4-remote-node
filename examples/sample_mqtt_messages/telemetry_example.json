@@ -1,0 +1,23 @@
+{
+  "schema": "mycodo.remote_node.telemetry.v1",
+  "node_id": "remote-node-01",
+  "firmware_version": "0.1.0-scaffold",
+  "uptime_seconds": 12345,
+  "network": {
+    "wifi_connected": true,
+    "mqtt_connected": true,
+    "rssi_dbm": -55
+  },
+  "sensors": {
+    "air_temperature_c": 24.6,
+    "relative_humidity_percent": 58.2
+  },
+  "outputs": {
+    "fan_1_enabled": true,
+    "fan_1_speed_percent": 60
+  },
+  "safety": {
+    "safe_mode_enabled": false,
+    "last_command_age_seconds": 10
+  }
+}

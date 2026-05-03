@@ -1,0 +1,12 @@
+# ESP-IDF managed component manifest placeholder.
+#
+# This scaffold does not need external managed components yet.
+# When the firmware grows, this file can list dependencies such as display,
+# touch, sensor, or helper libraries.
+#
+# Note: ESP-IDF commonly resolves component manifests from component folders.
+# If a future ESP-IDF version or dependency expects that layout, we can add a
+# matching main/idf_component.yml when dependencies are introduced.
+
+dependencies:
+  idf: ">=5.3.1"
