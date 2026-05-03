@@ -10,10 +10,12 @@ This repository is currently a scaffold.
 - Modular C source files exist, including a first boot/status screen milestone.
 - The project targets `esp32p4`.
 - The display milestone now depends on `main/idf_component.yml` downloading the Waveshare 7B BSP through the ESP-IDF Component Manager.
-- A full build has not been verified yet in this environment because `idf.py` is still not available in this shell.
+- A full ESP-IDF build was verified on 2026-05-03 for target `esp32p4`.
+- One small LVGL compatibility fix was needed during build verification: `LV_OPA_95` was replaced with `LV_OPA_90` in `main/ui_manager.c`.
+- The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
 - The firmware has not been flashed from this environment.
 
-Before treating the scaffold as board-ready firmware, run a real ESP-IDF build on a machine with ESP-IDF installed and active.
+Before treating the scaffold as board-ready firmware, flash the board and verify the boot screen on hardware.
 
 ## Required Tools
 
@@ -24,6 +26,12 @@ Before treating the scaffold as board-ready firmware, run a real ESP-IDF build o
 - Optional for MQTT testing: Mosquitto client tools.
 
 On Windows, the easiest starting point is usually the ESP-IDF PowerShell or ESP-IDF Command Prompt installed by Espressif's tools installer.
+
+On this machine, a plain PowerShell session needed these ESP-IDF activation details before `idf.py` worked:
+
+- `IDF_TOOLS_PATH=C:\Espressif`
+- ESP-IDF framework root: `C:\Espressif\frameworks\esp-idf-v5.5.4`
+- Python environment: `C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe`
 
 ## Set Target
 

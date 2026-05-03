@@ -82,7 +82,7 @@ static void ui_manager_build_boot_screen_locked(const app_state_t *state)
     lv_obj_set_size(panel, 820, 430);
     lv_obj_center(panel);
     lv_obj_set_style_bg_color(panel, lv_color_hex(0x101A2B), 0);
-    lv_obj_set_style_bg_opa(panel, LV_OPA_95, 0);
+    lv_obj_set_style_bg_opa(panel, LV_OPA_90, 0);
     lv_obj_set_style_border_color(panel, lv_color_hex(0x365375), 0);
     lv_obj_set_style_border_width(panel, 2, 0);
     lv_obj_set_style_radius(panel, 20, 0);

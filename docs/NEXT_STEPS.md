@@ -17,7 +17,7 @@ After each major step, suggest a clear commit message. Good milestone messages f
 
 ## Milestone: Repo Scaffold
 
-Status: In progress.
+Status: Completed.
 
 - [x] Create beginner-friendly repository folder structure.
 - [x] Add ESP-IDF `CMakeLists.txt` files.
@@ -31,19 +31,20 @@ Status: In progress.
 - [x] Initialize Git once Git is installed or available on PATH in this environment. Git became available later on 2026-05-03 and the repository was initialized on `main`.
 - [x] Configure repo-local Git identity for this repository only using `Ashley Paugh <codex@local>`.
 - [x] Create the first commit: `Initial repo scaffold`.
-- [ ] Do a first ESP-IDF build check after ESP-IDF is installed.
+- [x] Do a first ESP-IDF build check after ESP-IDF is installed. Verified on 2026-05-03 for target `esp32p4`.
+- [x] Commit the generated `dependencies.lock` file so managed component versions stay reproducible across future builds.
 
 Suggested commit message: `Initial repo scaffold`
 
 ## Milestone: Boot Screen
 
-Status: Implemented in source, waiting for first hardware build/flash verification.
+Status: Source implemented and build-verified, waiting for first hardware flash verification.
 
 - [x] Confirm the correct Waveshare display and touch driver path.
 - [x] Add LVGL as a managed dependency through the board-specific Waveshare BSP.
 - [x] Show a simple boot/status screen.
 - [x] Show firmware version, node ID, and connection placeholders.
-- [ ] Build the project from an ESP-IDF terminal.
+- [x] Build the project from an ESP-IDF terminal. Verified on 2026-05-03 for target `esp32p4` after a one-line LVGL compatibility fix in `main/ui_manager.c`.
 - [ ] Flash the board and verify the screen comes up on hardware.
 
 Suggested commit message: `Add boot screen scaffold`
