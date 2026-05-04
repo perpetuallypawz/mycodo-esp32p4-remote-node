@@ -16,8 +16,9 @@ This repository is currently an early firmware scaffold with a working first dis
 - The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
 - The project defaults now explicitly support the earlier ESP32-P4 silicon used by this board by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y` in `sdkconfig.defaults`.
 - The project now includes a custom `partitions.csv` file and uses it through `sdkconfig.defaults`.
-- The default single-app partition was too small once the hosted Wi-Fi components were added. The old factory app partition was `1 MB`, and the new factory app partition is `1984 KB` (`0x1f0000`).
-- The current Wi-Fi-enabled image size is `0x11e610` bytes (`1172624` bytes), leaving `0xd19f0` bytes free in the factory app partition.
+- The project now also sets a fixed `32MB` image-header flash size in `sdkconfig.defaults`, which matches the board's physical flash and makes the bootloader report `SPI Flash Size : 32MB`.
+- The default single-app partition was too small once the hosted Wi-Fi components were added. The first custom factory app partition was `1984 KB` (`0x1f0000`), and the current single factory app partition is `0x1ff0000` bytes.
+- The current Wi-Fi-enabled image size is `0x11e610` bytes (`1172624` bytes), leaving `0x1ed19f0` bytes free in the factory app partition.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
 - The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.
@@ -143,8 +144,9 @@ Verified Wi-Fi milestone flash result on 2026-05-03:
 ```text
 Port: COM3
 Partition layout: custom partitions.csv
-Factory app partition: 1984 KB
-Result: Flash succeeded with the larger single factory app partition
+Factory app partition: 0x1ff0000 bytes
+Flash size header: 32MB
+Result: Flash succeeded with the larger single factory app partition and the corrected 32MB image header
 ```
 
 ## Monitor Logs
@@ -182,6 +184,7 @@ The first scaffold should eventually log:
 Current captured startup result on 2026-05-03:
 
 - The boot now looks normal over serial.
+- The bootloader now reports `SPI Flash Size : 32MB`.
 - 32 MB PSRAM is detected and passes the memory test.
 - The Waveshare BSP reports `Display initialized`.
 - Touch is detected at `0x5d`.
@@ -223,8 +226,8 @@ Do not put real SSIDs or passwords into:
 Current note from runtime logs:
 
 - The board reports a physical flash size of `32MB`.
-- The current image header still says `2MB`, and the bootloader warns that it will use the size from the binary image header.
-- The current custom partition layout fits within that 2 MB header setting, so the firmware still boots and runs. Aligning the image header with the board's larger flash can be a later cleanup task once the early Wi-Fi milestone is stable.
+- The image header now also reports `32MB`, so the earlier flash-size mismatch is resolved.
+- The current custom partition layout stays simple: `nvs`, `phy_init`, and one large `factory` app partition with no OTA slots yet.
 
 If the board reboots repeatedly, disconnect attached output hardware and review the serial logs before continuing.
 

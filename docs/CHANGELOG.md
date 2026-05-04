@@ -45,3 +45,6 @@
 - Re-ran `idf.py fullclean`, `idf.py set-target esp32p4`, `idf.py reconfigure`, and `idf.py build`, and the Wi-Fi-enabled build passed.
 - Reflashed the partition-fixed Wi-Fi build on `COM3` and captured runtime logs showing the display boot path still initializes successfully.
 - Captured hosted Wi-Fi startup logs showing placeholder credentials, connection attempts, disconnect reason `201`, five retries, and a final safe failure state instead of endless retries.
+- Updated `sdkconfig.defaults` so the image header now explicitly matches the Waveshare board's 32 MB flash by setting `CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y` and `CONFIG_ESPTOOLPY_FLASHSIZE="32MB"`.
+- Expanded `partitions.csv` again so the simple single factory app layout now uses a `0x1ff0000` factory partition while still keeping `nvs` and `phy_init`.
+- Rebuilt, reflashed, and re-monitored the flash-size-cleanup image on `COM3`; the bootloader now reports `SPI Flash Size : 32MB`, the display still initializes successfully, and Wi-Fi still fails safely with placeholder credentials after five retries.

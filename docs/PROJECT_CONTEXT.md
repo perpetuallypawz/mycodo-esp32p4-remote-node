@@ -32,7 +32,8 @@ Mycodo must not be installed on the ESP32-P4 board.
 - A generated `dependencies.lock` file that pins the resolved managed component versions for reproducible builds.
 - A first Wi-Fi station manager milestone using the ESP-IDF hosted Wi-Fi path required by ESP32-P4.
 - Serial logs for Wi-Fi startup, connection attempts, disconnect reasons, retry counts, and safe failure after the retry limit is reached.
-- A project-local `partitions.csv` file that expands the single factory app partition so the display + Wi-Fi firmware fits without adding OTA partitions yet.
+- Durable flash-size defaults that now match the board's physical 32 MB flash, so the bootloader reports `SPI Flash Size : 32MB` instead of the old 2 MB image-header value.
+- A project-local `partitions.csv` file that now uses a simple single-factory-app layout with a `0x1ff0000` factory partition, leaving plenty of room for the current display + Wi-Fi firmware without adding OTA partitions yet.
 - A local `menuconfig` path for private Wi-Fi credentials stored in the ignored `sdkconfig` file instead of Git-tracked source files.
 - Safe example configuration under `config/`.
 - MQTT topic notes.

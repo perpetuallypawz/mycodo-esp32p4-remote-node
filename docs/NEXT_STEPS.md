@@ -67,6 +67,7 @@ Status: Implemented and hardware-verified with safe placeholder credentials. Rea
 - [x] Show Wi-Fi connection state in logs and UI.
 - [x] Add the hosted Wi-Fi component dependencies required by `esp32p4`.
 - [x] Increase the single factory app partition size with a project-local `partitions.csv` so the display + Wi-Fi firmware fits.
+- [x] Align the image header with the board's physical 32 MB flash and re-verify boot on `COM3`.
 - [x] Rebuild, flash on `COM3`, and monitor the Wi-Fi startup and retry logs.
 - [ ] Replace the placeholder SSID and password locally through `idf.py menuconfig` and confirm a successful real AP connection.
 

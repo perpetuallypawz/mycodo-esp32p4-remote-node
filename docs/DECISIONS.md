@@ -168,3 +168,25 @@ Reasons:
 Tradeoff:
 
 - The current layout favors app space over OTA flexibility, so OTA partitions can be added later only when the project is ready for update workflows.
+
+## 2026-05-03: Match The Image Header To The Board's 32 MB Flash
+
+Decision: Set a fixed `32MB` flash size in `sdkconfig.defaults` and keep the simple single-factory partition layout instead of relying on the old 2 MB image-header default.
+
+Reasons:
+
+- Runtime logs showed the Waveshare board physically has 32 MB of flash, while the image header still claimed 2 MB.
+- The older 2 MB header did not stop the current image from booting, but it was confusing and left the project one config mismatch away from a future partition problem.
+- A fixed configured flash size keeps the image description honest across clean builds and future sessions.
+- The current project still does not need OTA, so the simplest next step is to keep one large factory partition and use the real flash capacity for headroom.
+
+Settings:
+
+- `CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y`
+- `CONFIG_ESPTOOLPY_FLASHSIZE="32MB"`
+- `CONFIG_PARTITION_TABLE_CUSTOM=y`
+- `CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"`
+
+Tradeoff:
+
+- The project now assumes the board's standard 32 MB flash configuration, so if a future hardware variant ships with a different flash size, this setting should be revisited deliberately rather than patched ad hoc.
