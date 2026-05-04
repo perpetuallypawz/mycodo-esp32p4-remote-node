@@ -30,6 +30,10 @@ Mycodo must not be installed on the ESP32-P4 board.
 - Captured logs showing PSRAM detection, successful Waveshare display initialization, touch detection, backlight setup, and boot-screen initialization.
 - User-confirmed visual verification that the boot screen appears on the physical Waveshare LCD.
 - A generated `dependencies.lock` file that pins the resolved managed component versions for reproducible builds.
+- A first Wi-Fi station manager milestone using the ESP-IDF hosted Wi-Fi path required by ESP32-P4.
+- Serial logs for Wi-Fi startup, connection attempts, disconnect reasons, retry counts, and safe failure after the retry limit is reached.
+- A project-local `partitions.csv` file that expands the single factory app partition so the display + Wi-Fi firmware fits without adding OTA partitions yet.
+- A local `menuconfig` path for private Wi-Fi credentials stored in the ignored `sdkconfig` file instead of Git-tracked source files.
 - Safe example configuration under `config/`.
 - MQTT topic notes.
 - Sample MQTT JSON payloads.
@@ -41,7 +45,7 @@ Mycodo must not be installed on the ESP32-P4 board.
 
 Most current source files are still placeholders.
 
-- Wi-Fi is not implemented.
+- Wi-Fi station initialization is implemented, but the committed credentials are safe placeholders. Real AP connection still depends on private local `sdkconfig` values.
 - MQTT is not implemented.
 - Only the first boot/status screen is implemented. Interactive touch pages are not implemented yet.
 - Sensors are not implemented.
@@ -55,6 +59,6 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Begin Wi-Fi manager implementation while keeping the working display boot path intact.
+Set real local Wi-Fi credentials through `idf.py menuconfig` and verify a successful AP connection without committing `sdkconfig`.
 
-After that, add Wi-Fi, then MQTT, then mock telemetry before connecting real sensors or outputs.
+After that, add MQTT, then mock telemetry before connecting real sensors or outputs.

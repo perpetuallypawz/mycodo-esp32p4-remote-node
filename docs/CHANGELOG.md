@@ -39,3 +39,9 @@
 - Reflashed the board on `COM3` and captured a clean runtime boot log showing PSRAM initialization, `Display initialized`, touch detection, backlight setup, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`.
 - Cleaned up the stale `idf.py` and `idf_monitor.py` helper processes after the timed monitor wrapper so `COM3` is free for the next hardware check.
 - Recorded the user's visual hardware confirmation that the boot screen appears correctly on the physical Waveshare LCD.
+- Added a first hosted Wi-Fi station manager milestone for `esp32p4`, including serial logs for Wi-Fi startup, retries, disconnects, and safe failure after the retry limit.
+- Added `main/Kconfig.projbuild` so real local Wi-Fi credentials can be set through `idf.py menuconfig` and stored in the ignored `sdkconfig` file instead of Git-tracked source files.
+- Added a project-local `partitions.csv` and updated `sdkconfig.defaults` to use it, increasing the single factory app partition from 1 MB to 1984 KB so the display + Wi-Fi firmware fits without OTA yet.
+- Re-ran `idf.py fullclean`, `idf.py set-target esp32p4`, `idf.py reconfigure`, and `idf.py build`, and the Wi-Fi-enabled build passed.
+- Reflashed the partition-fixed Wi-Fi build on `COM3` and captured runtime logs showing the display boot path still initializes successfully.
+- Captured hosted Wi-Fi startup logs showing placeholder credentials, connection attempts, disconnect reason `201`, five retries, and a final safe failure state instead of endless retries.

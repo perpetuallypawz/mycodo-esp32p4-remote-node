@@ -139,3 +139,32 @@ Settings:
 Tradeoff:
 
 - The display path now depends on external PSRAM being available and configured correctly, so future display regressions should check PSRAM logs early.
+
+## 2026-05-03: Use ESP32-P4 Hosted Wi-Fi And Keep Real Credentials In Local sdkconfig
+
+Decision: Use the ESP-IDF hosted Wi-Fi path for ESP32-P4 and keep real local Wi-Fi credentials in the ignored `sdkconfig` file through `idf.py menuconfig`.
+
+Reasons:
+
+- ESP32-P4 uses the hosted/two-chip Wi-Fi path rather than native on-chip Wi-Fi in the local ESP-IDF examples for this target.
+- The board-specific display milestone already relies on ESP-IDF managed components, so adding `espressif/esp_hosted` and `espressif/esp_wifi_remote` fits the current project style.
+- `sdkconfig` is already ignored by Git, which makes it a safer short-term home for private Wi-Fi SSID and password values than Git-tracked source files.
+- A menuconfig-based workflow is beginner-friendly and easy to explain before a later NVS-backed settings flow exists.
+
+Tradeoff:
+
+- The current milestone can initialize Wi-Fi and fail safely with placeholder defaults, but real AP connection still depends on local menuconfig values that are not shared through Git.
+
+## 2026-05-03: Use A Project-Local partitions.csv For The Wi-Fi Build
+
+Decision: Use a custom project-local `partitions.csv` with a single large factory app partition instead of the default 1 MB single-app layout.
+
+Reasons:
+
+- The display + hosted Wi-Fi firmware grew beyond the default 1 MB factory partition.
+- The current milestone does not need OTA yet, so a single factory app layout is the simplest durable fix.
+- Keeping the custom partition layout in the repo makes the size fix explicit and repeatable across clean builds.
+
+Tradeoff:
+
+- The current layout favors app space over OTA flexibility, so OTA partitions can be added later only when the project is ready for update workflows.

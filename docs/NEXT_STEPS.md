@@ -59,12 +59,16 @@ Suggested commit message: `Add boot screen scaffold`
 
 ## Milestone: Wi-Fi
 
-Status: Not started.
+Status: Implemented and hardware-verified with safe placeholder credentials. Real AP connection still needs private local `sdkconfig` values.
 
-- [ ] Add Wi-Fi station initialization.
-- [ ] Load safe placeholder settings first.
-- [ ] Decide how private local Wi-Fi credentials will be provided.
-- [ ] Show Wi-Fi connection state in logs and UI.
+- [x] Add Wi-Fi station initialization.
+- [x] Load safe placeholder settings first.
+- [x] Decide how private local Wi-Fi credentials will be provided. Current choice: `idf.py menuconfig`, which stores them in the ignored `sdkconfig` file.
+- [x] Show Wi-Fi connection state in logs and UI.
+- [x] Add the hosted Wi-Fi component dependencies required by `esp32p4`.
+- [x] Increase the single factory app partition size with a project-local `partitions.csv` so the display + Wi-Fi firmware fits.
+- [x] Rebuild, flash on `COM3`, and monitor the Wi-Fi startup and retry logs.
+- [ ] Replace the placeholder SSID and password locally through `idf.py menuconfig` and confirm a successful real AP connection.
 
 Suggested commit message: `Add Wi-Fi manager`
 

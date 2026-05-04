@@ -15,6 +15,9 @@ This repository is currently an early firmware scaffold with a working first dis
 - One small LVGL compatibility fix was needed during build verification: `LV_OPA_95` was replaced with `LV_OPA_90` in `main/ui_manager.c`.
 - The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
 - The project defaults now explicitly support the earlier ESP32-P4 silicon used by this board by setting `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y` and `CONFIG_ESP32P4_REV_MIN_100=y` in `sdkconfig.defaults`.
+- The project now includes a custom `partitions.csv` file and uses it through `sdkconfig.defaults`.
+- The default single-app partition was too small once the hosted Wi-Fi components were added. The old factory app partition was `1 MB`, and the new factory app partition is `1984 KB` (`0x1f0000`).
+- The current Wi-Fi-enabled image size is `0x11e610` bytes (`1172624` bytes), leaving `0xd19f0` bytes free in the factory app partition.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
 - The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.
@@ -22,7 +25,9 @@ This repository is currently an early firmware scaffold with a working first dis
 - A later serial-monitor verification on 2026-05-03 showed a clean runtime boot: PSRAM initialization succeeded, the Waveshare BSP reported `Display initialized`, touch was detected, the backlight was set, and `ui_manager` logged that the boot screen was initialized.
 - The user visually confirmed on 2026-05-03 that the boot screen appears on the physical Waveshare LCD, so the first display milestone is now verified both over serial and on hardware.
 
-Before treating the scaffold as board-ready firmware, keep the current display path stable while the next milestone adds Wi-Fi support.
+Before treating the scaffold as board-ready firmware, keep the current display path stable while the next milestone adds MQTT and real network integration.
+
+The Wi-Fi initialization milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified with safe placeholder credentials. A real AP connection still requires private local credentials in `sdkconfig`.
 
 ## Required Tools
 
@@ -72,6 +77,9 @@ If this fails, check:
 - `sdkconfig.defaults` still includes the earlier-silicon settings for this board:
   - `CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y`
   - `CONFIG_ESP32P4_REV_MIN_100=y`
+- `sdkconfig.defaults` still points at the custom partition table:
+  - `CONFIG_PARTITION_TABLE_CUSTOM=y`
+  - `CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"`
 - Any future managed components have downloaded correctly.
 
 ## Find The Serial Port
@@ -130,6 +138,15 @@ Chip: ESP32-P4 revision v1.3
 Result: Flash succeeded after enabling support for ESP32-P4 revisions below v3.0
 ```
 
+Verified Wi-Fi milestone flash result on 2026-05-03:
+
+```text
+Port: COM3
+Partition layout: custom partitions.csv
+Factory app partition: 1984 KB
+Result: Flash succeeded with the larger single factory app partition
+```
+
 ## Monitor Logs
 
 After flashing:
@@ -150,6 +167,8 @@ If the monitor finally connects but the startup output shows `Stack dump detecte
 
 If the monitor instead shows PSRAM coming up, `Display initialized`, touch detection, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`, the serial side of the first display milestone is healthy and the next check is the physical LCD.
 
+If the monitor shows the Wi-Fi manager using placeholder credentials, disconnect reason `201`, retry counts, and a final safe failure after the configured retry limit, the current Wi-Fi milestone is behaving as expected without real credentials.
+
 ## Expected Early Scaffold Logs
 
 The first scaffold should eventually log:
@@ -169,6 +188,43 @@ Current captured startup result on 2026-05-03:
 - The backlight is set to `85%`.
 - `ui_manager` reports `Boot screen initialized with Waveshare BSP and LVGL`.
 - The user visually confirmed the boot screen on the physical LCD.
+- The hosted Wi-Fi stack initializes successfully on `esp32p4`.
+- With the committed placeholder SSID and password, the Wi-Fi manager logs connection attempts, retries up to the configured limit, and then reports a clean failure state instead of retrying forever.
+
+## Safe Private Wi-Fi Credentials
+
+For the current Wi-Fi milestone, the safest private-credential workflow is:
+
+```powershell
+idf.py menuconfig
+```
+
+Then open:
+
+```text
+Mycodo Remote Node Configuration
+```
+
+Set:
+
+- `Wi-Fi SSID`
+- `Wi-Fi password`
+- `Wi-Fi maximum retry count` if desired
+
+These values are stored in the local `sdkconfig` file, which is already ignored by Git.
+
+Do not put real SSIDs or passwords into:
+
+- `main/app_config.h`
+- `sdkconfig.defaults`
+- `config/example_config.json`
+- any Git-tracked source or documentation file
+
+Current note from runtime logs:
+
+- The board reports a physical flash size of `32MB`.
+- The current image header still says `2MB`, and the bootloader warns that it will use the size from the binary image header.
+- The current custom partition layout fits within that 2 MB header setting, so the firmware still boots and runs. Aligning the image header with the board's larger flash can be a later cleanup task once the early Wi-Fi milestone is stable.
 
 If the board reboots repeatedly, disconnect attached output hardware and review the serial logs before continuing.
 

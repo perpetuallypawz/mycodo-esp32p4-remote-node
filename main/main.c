@@ -15,6 +15,7 @@
 #include "sensor_manager.h"
 #include "storage_manager.h"
 #include "ui_manager.h"
+#include "wifi_manager.h"
 
 #include "esp_err.h"
 #include "esp_log.h"
@@ -38,8 +39,9 @@ void app_main(void)
     ESP_ERROR_CHECK(safety_manager_init(&state));
     ESP_ERROR_CHECK(sensor_manager_init(&state));
     ESP_ERROR_CHECK(control_manager_init(&state));
-    ESP_ERROR_CHECK(mqtt_client_manager_init(&state));
     ESP_ERROR_CHECK(ui_manager_init(&state));
+    ESP_ERROR_CHECK(wifi_manager_init(&state));
+    ESP_ERROR_CHECK(mqtt_client_manager_init(&state));
 
     ESP_LOGI(TAG, "Scaffold boot complete. Full firmware logic has not been added yet.");
 
@@ -47,6 +49,7 @@ void app_main(void)
         ESP_ERROR_CHECK(safety_manager_check(&state));
         ESP_ERROR_CHECK(sensor_manager_read_placeholder(&state));
         ESP_ERROR_CHECK(control_manager_apply_outputs_placeholder(&state));
+        ESP_ERROR_CHECK(wifi_manager_sync_state(&state));
         ESP_ERROR_CHECK(mqtt_client_manager_publish_telemetry_placeholder(&state));
         ESP_ERROR_CHECK(ui_manager_update(&state));
 
