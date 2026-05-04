@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "sdkconfig.h"
+
 #define APP_NAME "mycodo-esp32p4-remote-node"
 #define APP_FIRMWARE_VERSION "0.1.0-scaffold"
 #define APP_BOARD_NAME "Waveshare ESP32-P4-WIFI6-Touch-LCD-7B"
@@ -18,6 +20,18 @@
 /* First display milestone settings. */
 #define APP_DISPLAY_BOOT_BRIGHTNESS_PERCENT 85
 #define APP_DISPLAY_UI_LOCK_TIMEOUT_MS 1000
+
+/*
+ * Safe placeholder Wi-Fi settings.
+ *
+ * Keep these values fake in Git. A future local config or NVS-backed storage
+ * flow can replace them without committing real credentials.
+ */
+#define APP_WIFI_PLACEHOLDER_SSID "CHANGE_ME_WIFI_SSID"
+#define APP_WIFI_PLACEHOLDER_PASSWORD "CHANGE_ME_WIFI_PASSWORD"
+#define APP_WIFI_DEFAULT_SSID CONFIG_APP_WIFI_SSID
+#define APP_WIFI_DEFAULT_PASSWORD CONFIG_APP_WIFI_PASSWORD
+#define APP_WIFI_MAXIMUM_RETRY_COUNT CONFIG_APP_WIFI_MAXIMUM_RETRY_COUNT
 
 /* Placeholder loop timing while real tasks are not implemented. */
 #define APP_MAIN_LOOP_DELAY_MS 5000

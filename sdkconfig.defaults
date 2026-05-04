@@ -10,6 +10,13 @@ CONFIG_IDF_TARGET="esp32p4"
 CONFIG_ESP32P4_SELECTS_REV_LESS_V3=y
 CONFIG_ESP32P4_REV_MIN_100=y
 
+# ESP32-P4 uses the hosted/two-chip Wi-Fi path instead of native on-chip Wi-Fi.
+CONFIG_ESP_HOST_WIFI_ENABLED=y
+CONFIG_ESP_WIFI_REMOTE_LIBRARY_HOSTED=y
+CONFIG_APP_WIFI_SSID="CHANGE_ME_WIFI_SSID"
+CONFIG_APP_WIFI_PASSWORD="CHANGE_ME_WIFI_PASSWORD"
+CONFIG_APP_WIFI_MAXIMUM_RETRY_COUNT=5
+
 # The 7-inch MIPI display path allocates full frame buffers from PSRAM.
 # Without PSRAM enabled, the Waveshare BSP panics during display startup
 # with "no memory for frame buffer" inside esp_lcd_new_panel_dpi().
@@ -20,3 +27,14 @@ CONFIG_SPIRAM_SPEED_200M=y
 
 # Keep logs readable for early development.
 CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# Match the image header to the Waveshare board's detected 32 MB flash.
+# Keep the bootloader image digest intact by using a fixed configured size
+# instead of runtime flash-size patching during flashing.
+CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="32MB"
+
+# Use a project-local partition table so the single factory app has enough room
+# for the display + hosted Wi-Fi firmware without enabling OTA yet.
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"

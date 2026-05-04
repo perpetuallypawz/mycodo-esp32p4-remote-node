@@ -139,3 +139,54 @@ Settings:
 Tradeoff:
 
 - The display path now depends on external PSRAM being available and configured correctly, so future display regressions should check PSRAM logs early.
+
+## 2026-05-03: Use ESP32-P4 Hosted Wi-Fi And Keep Real Credentials In Local sdkconfig
+
+Decision: Use the ESP-IDF hosted Wi-Fi path for ESP32-P4 and keep real local Wi-Fi credentials in the ignored `sdkconfig` file through `idf.py menuconfig`.
+
+Reasons:
+
+- ESP32-P4 uses the hosted/two-chip Wi-Fi path rather than native on-chip Wi-Fi in the local ESP-IDF examples for this target.
+- The board-specific display milestone already relies on ESP-IDF managed components, so adding `espressif/esp_hosted` and `espressif/esp_wifi_remote` fits the current project style.
+- `sdkconfig` is already ignored by Git, which makes it a safer short-term home for private Wi-Fi SSID and password values than Git-tracked source files.
+- A menuconfig-based workflow is beginner-friendly and easy to explain before a later NVS-backed settings flow exists.
+
+Tradeoff:
+
+- The current milestone can initialize Wi-Fi and fail safely with placeholder defaults, but real AP connection still depends on local menuconfig values that are not shared through Git.
+
+## 2026-05-03: Use A Project-Local partitions.csv For The Wi-Fi Build
+
+Decision: Use a custom project-local `partitions.csv` with a single large factory app partition instead of the default 1 MB single-app layout.
+
+Reasons:
+
+- The display + hosted Wi-Fi firmware grew beyond the default 1 MB factory partition.
+- The current milestone does not need OTA yet, so a single factory app layout is the simplest durable fix.
+- Keeping the custom partition layout in the repo makes the size fix explicit and repeatable across clean builds.
+
+Tradeoff:
+
+- The current layout favors app space over OTA flexibility, so OTA partitions can be added later only when the project is ready for update workflows.
+
+## 2026-05-03: Match The Image Header To The Board's 32 MB Flash
+
+Decision: Set a fixed `32MB` flash size in `sdkconfig.defaults` and keep the simple single-factory partition layout instead of relying on the old 2 MB image-header default.
+
+Reasons:
+
+- Runtime logs showed the Waveshare board physically has 32 MB of flash, while the image header still claimed 2 MB.
+- The older 2 MB header did not stop the current image from booting, but it was confusing and left the project one config mismatch away from a future partition problem.
+- A fixed configured flash size keeps the image description honest across clean builds and future sessions.
+- The current project still does not need OTA, so the simplest next step is to keep one large factory partition and use the real flash capacity for headroom.
+
+Settings:
+
+- `CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y`
+- `CONFIG_ESPTOOLPY_FLASHSIZE="32MB"`
+- `CONFIG_PARTITION_TABLE_CUSTOM=y`
+- `CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"`
+
+Tradeoff:
+
+- The project now assumes the board's standard 32 MB flash configuration, so if a future hardware variant ships with a different flash size, this setting should be revisited deliberately rather than patched ad hoc.

@@ -30,10 +30,16 @@ static lv_obj_t *s_status_label = NULL;
 static const char *ui_manager_network_state_to_string(app_network_state_t state)
 {
     switch (state) {
+    case APP_NETWORK_WIFI_STARTING:
+        return "Wi-Fi starting";
+    case APP_NETWORK_WIFI_CONNECTING:
+        return "Wi-Fi connecting";
     case APP_NETWORK_WIFI_CONNECTED:
         return "Wi-Fi connected";
     case APP_NETWORK_MQTT_CONNECTED:
         return "MQTT connected";
+    case APP_NETWORK_WIFI_FAILED:
+        return "Wi-Fi failed";
     case APP_NETWORK_DISCONNECTED:
     default:
         return "disconnected";
@@ -66,10 +72,18 @@ static void ui_manager_sync_labels_locked(const app_state_t *state)
     }
 
     lv_label_set_text_fmt(s_node_label, "Node ID: %s", state->node_id);
-    lv_label_set_text_fmt(s_network_label, "Network: %s", ui_manager_network_state_to_string(state->network_state));
+    if (state->network_detail[0] != '\0') {
+        lv_label_set_text_fmt(
+            s_network_label,
+            "Network: %s | %s",
+            ui_manager_network_state_to_string(state->network_state),
+            state->network_detail);
+    } else {
+        lv_label_set_text_fmt(s_network_label, "Network: %s", ui_manager_network_state_to_string(state->network_state));
+    }
     lv_label_set_text_fmt(s_safe_mode_label, "Safe mode: %s", state->safe_mode_enabled ? "enabled" : "disabled");
     lv_label_set_text_fmt(s_loop_label, "Loop count: %" PRIu32, state->loop_count);
-    lv_label_set_text(s_services_label, "Services: display live | Wi-Fi stub | MQTT stub | sensors stub | controls stub");
+    lv_label_set_text(s_services_label, "Services: display live | Wi-Fi live | MQTT stub | sensors stub | controls stub");
     lv_label_set_text_fmt(s_status_label, "Status: %s", state->status_message);
 }
 

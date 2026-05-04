@@ -2,7 +2,7 @@
 
 Beginner-friendly ESP-IDF firmware scaffold for a Waveshare ESP32-P4-WIFI6-Touch-LCD-7B board that will eventually act as a remote node for a Raspberry Pi 4B running Mycodo.
 
-This repo now includes the first real display milestone, but it does not contain full Wi-Fi, MQTT, sensor, or output-control logic yet.
+This repo now includes the first real display milestone and an early Wi-Fi station milestone, but it does not contain MQTT, real sensors, or output-control logic yet.
 
 ## 1. What This Firmware Does
 
@@ -17,18 +17,18 @@ This project is intended to become firmware for an ESP32-P4 remote node. In the 
 - Store non-secret local settings in flash memory.
 - Keep safety logic separate from normal control logic.
 
-Right now, the code only creates a modular starting point with placeholder files and comments.
+Right now, the code provides a working boot/status screen, early Wi-Fi station initialization, and placeholder modules for the remaining future features.
 
 ## 2. What This Firmware Does NOT Do
 
 This scaffold does not yet:
 
-- Connect to Wi-Fi.
+- Connect to a real Wi-Fi network by default. The committed defaults are safe placeholders only.
 - Connect to an MQTT broker.
 - Read real sensors.
 - Control real outputs.
 - Provide interactive touch controls beyond the basic boot/status screen.
-- Store real configuration in NVS.
+- Store editable runtime configuration in NVS.
 - Include real Wi-Fi passwords, MQTT passwords, tokens, or private credentials.
 
 Do not wire high-voltage equipment directly to the ESP32-P4 board. Use proper relay modules, fuses, enclosures, and isolation hardware.
@@ -146,7 +146,7 @@ This first scaffold is meant to be simple and readable. If the build fails later
 - ESP-IDF is not installed or not activated in the current terminal.
 - The target was not set to `esp32p4`.
 - A future dependency was added but not installed.
-- A board-specific display, touch, or Wi-Fi driver has not been added yet.
+- A board-specific display, touch, Wi-Fi, or partition-table setting has not been added yet.
 
 ## 7. Flash The Waveshare Board
 
@@ -200,6 +200,13 @@ See [examples/sample_mqtt_messages](examples/sample_mqtt_messages) for safe exam
 
 Do not put real secrets in source files.
 
+Current Wi-Fi milestone behavior:
+
+- The committed project defaults use safe placeholder Wi-Fi credentials.
+- The current firmware reads Wi-Fi settings from local `sdkconfig` values produced by `idf.py menuconfig`.
+- `sdkconfig` is already ignored by Git, so it is the safest current place to keep real Wi-Fi credentials for local builds.
+- `config/local_config.json` is still only a planning file right now. The current firmware does not read Wi-Fi credentials from that JSON file yet.
+
 Safe files to commit:
 
 - [config/example_config.json](config/example_config.json)
@@ -209,12 +216,38 @@ Safe files to commit:
 
 Files that should stay private:
 
+- `sdkconfig`
 - `config/local_config.json`
 - `config/secrets.json`
 - `.env`
 - Any file containing real Wi-Fi passwords, MQTT passwords, API tokens, or private keys
 
-The [.gitignore](.gitignore) file is already set up to avoid committing common private config files.
+Recommended local workflow for real Wi-Fi credentials:
+
+```powershell
+idf.py menuconfig
+```
+
+Then go to:
+
+```text
+Mycodo Remote Node Configuration
+```
+
+Set:
+
+- `Wi-Fi SSID`
+- `Wi-Fi password`
+- `Wi-Fi maximum retry count` if you want a different retry limit
+
+Then build and flash again:
+
+```powershell
+idf.py build
+idf.py -p COM3 flash
+```
+
+The [.gitignore](.gitignore) file is already set up to avoid committing `sdkconfig`, common private config files, build output, and temporary monitor logs.
 
 ## 11. Troubleshooting
 
@@ -267,13 +300,14 @@ This repo currently contains:
 - ESP-IDF CMake starter files.
 - Modular placeholder source files.
 - A real Waveshare BSP + LVGL boot screen milestone.
+- A hosted Wi-Fi station initialization milestone with safe placeholder defaults.
 - Safe example configuration.
 - MQTT topic notes.
 - First-flash and safety docs.
 - Persistent project memory docs for future Codex sessions.
 - Dedicated build and flash notes.
 
-It does not yet contain production Wi-Fi, MQTT, sensor, or control logic.
+It does not yet contain MQTT, real-sensor, or real-output logic, and it does not commit real Wi-Fi credentials.
 
 ## Project Memory For Future Sessions
 

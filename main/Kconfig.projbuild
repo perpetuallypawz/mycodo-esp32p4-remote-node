@@ -1,0 +1,27 @@
+menu "Mycodo Remote Node Configuration"
+
+    config APP_WIFI_SSID
+        string "Wi-Fi SSID"
+        default "CHANGE_ME_WIFI_SSID"
+        help
+            Safe default Wi-Fi SSID placeholder. Change this locally with
+            'idf.py menuconfig' so your real SSID stays in the ignored
+            sdkconfig file instead of Git-tracked source files.
+
+    config APP_WIFI_PASSWORD
+        string "Wi-Fi password"
+        default "CHANGE_ME_WIFI_PASSWORD"
+        help
+            Safe default Wi-Fi password placeholder. Change this locally with
+            'idf.py menuconfig' so your real password stays in the ignored
+            sdkconfig file instead of Git-tracked source files.
+
+    config APP_WIFI_MAXIMUM_RETRY_COUNT
+        int "Wi-Fi maximum retry count"
+        range 0 20
+        default 5
+        help
+            Maximum reconnect attempts before the Wi-Fi manager reports a safe
+            failure state instead of retrying forever.
+
+endmenu

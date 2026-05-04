@@ -5,6 +5,7 @@ idf_component_register(
     SRCS
         "main.c"
         "app_state.c"
+        "wifi_manager.c"
         "mqtt_client_manager.c"
         "ui_manager.c"
         "sensor_manager.c"
@@ -16,6 +17,11 @@ idf_component_register(
         "."
     REQUIRES
         esp_common
+        esp_event
+        esp_netif
+        esp_wifi
         freertos
         log
+        lwip
+        nvs_flash
 )

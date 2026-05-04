@@ -75,6 +75,7 @@ Current status:
 
 - A basic boot/status screen is implemented with the Waveshare 7B BSP and LVGL.
 - The boot screen has been visually verified by the user on the physical Waveshare LCD.
+- The boot/status screen now also reflects the shared Wi-Fi connection state from `app_state`.
 - Touch input is initialized by the BSP, but no touch actions are wired into the app yet.
 - The current display path uses the BSP's standard `bsp_display_start()` flow, and the 1024x600 MIPI display stack depends on PSRAM being enabled for frame-buffer allocation.
 
@@ -117,6 +118,7 @@ touch input -> ui_manager -> safety_manager/control_manager when local control i
 | `main/main.c` | Starts managers and runs the placeholder main loop |
 | `app_config.h` | Safe compile-time constants |
 | `app_state.*` | Shared status between managers |
+| `wifi_manager.*` | Hosted Wi-Fi station setup, event logging, retry tracking, and shared Wi-Fi status |
 | `mqtt_client_manager.*` | Future MQTT connection and message handling |
 | `ui_manager.*` | Current boot/status screen and future LCD/touch UI |
 | `sensor_manager.*` | Future sensor reads |
