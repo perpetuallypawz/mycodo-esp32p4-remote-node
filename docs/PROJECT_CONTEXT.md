@@ -32,6 +32,7 @@ Mycodo must not be installed on the ESP32-P4 board.
 - A generated `dependencies.lock` file that pins the resolved managed component versions for reproducible builds.
 - A first Wi-Fi station manager milestone using the ESP-IDF hosted Wi-Fi path required by ESP32-P4.
 - Serial logs for Wi-Fi startup, connection attempts, disconnect reasons, retry counts, and safe failure after the retry limit is reached.
+- A first MQTT manager milestone that waits for Wi-Fi before starting, uses safe placeholder broker settings by default, publishes stub status/heartbeat/telemetry messages, and logs inbound command topics without executing real controls.
 - Durable flash-size defaults that now match the board's physical 32 MB flash, so the bootloader reports `SPI Flash Size : 32MB` instead of the old 2 MB image-header value.
 - A project-local `partitions.csv` file that now uses a simple single-factory-app layout with a `0x1ff0000` factory partition, leaving plenty of room for the current display + Wi-Fi firmware without adding OTA partitions yet.
 - A local `menuconfig` path for private Wi-Fi credentials stored in the ignored `sdkconfig` file instead of Git-tracked source files.
@@ -47,7 +48,8 @@ Mycodo must not be installed on the ESP32-P4 board.
 Most current source files are still placeholders.
 
 - Wi-Fi station initialization is implemented, but the committed credentials are safe placeholders. Real AP connection still depends on private local `sdkconfig` values.
-- MQTT is not implemented.
+- MQTT is implemented, but real broker connection still depends on private local `sdkconfig` values for Wi-Fi and MQTT.
+- MQTT inbound command handling is stub-only. The current firmware logs inbound topics and publishes a safe acknowledgement event instead of touching outputs.
 - Only the first boot/status screen is implemented. Interactive touch pages are not implemented yet.
 - Sensors are not implemented.
 - Output control is not implemented.
@@ -60,6 +62,6 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Set real local Wi-Fi credentials through `idf.py menuconfig` and verify a successful AP connection without committing `sdkconfig`.
+Set real local Wi-Fi and MQTT broker settings through `idf.py menuconfig`, then verify a successful broker connection without committing `sdkconfig`.
 
-After that, add MQTT, then mock telemetry before connecting real sensors or outputs.
+After that, expand the current stub telemetry into a dedicated mock telemetry milestone before connecting real sensors or outputs.

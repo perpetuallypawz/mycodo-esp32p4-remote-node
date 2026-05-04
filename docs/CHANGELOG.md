@@ -48,3 +48,7 @@
 - Updated `sdkconfig.defaults` so the image header now explicitly matches the Waveshare board's 32 MB flash by setting `CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y` and `CONFIG_ESPTOOLPY_FLASHSIZE="32MB"`.
 - Expanded `partitions.csv` again so the simple single factory app layout now uses a `0x1ff0000` factory partition while still keeping `nvs` and `phy_init`.
 - Rebuilt, reflashed, and re-monitored the flash-size-cleanup image on `COM3`; the bootloader now reports `SPI Flash Size : 32MB`, the display still initializes successfully, and Wi-Fi still fails safely with placeholder credentials after five retries.
+- Replaced the old MQTT placeholder module with a real `mqtt_manager` that uses ESP-IDF's bundled MQTT client, menuconfig-backed broker settings, and the topic root `mycodo/remote/{node_id}`.
+- Added safe placeholder MQTT defaults, stub status/heartbeat/telemetry publishes, subscriptions for `cmd/#`, `config/#`, and `control/#`, and stub-only acknowledgement events for inbound messages.
+- Updated the boot/status screen and shared app state so MQTT status is surfaced alongside Wi-Fi state.
+- Built, reflashed, and monitored the MQTT milestone on `COM3`; the display still initialized correctly, Wi-Fi still failed safely with placeholder credentials, and MQTT correctly stayed gated behind Wi-Fi instead of starting unsafely.

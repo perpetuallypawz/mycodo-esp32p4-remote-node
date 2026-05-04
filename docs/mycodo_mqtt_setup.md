@@ -4,7 +4,14 @@ This document will eventually describe how to connect the ESP32-P4 firmware to M
 
 ## Current Status
 
-The firmware does not connect to MQTT yet. The topic plan and sample messages are included so the Raspberry Pi side can be designed early.
+The firmware now includes a first MQTT manager milestone.
+
+Current behavior:
+
+- MQTT starts only after Wi-Fi is connected.
+- Safe placeholder MQTT broker settings are committed in source.
+- Real local broker settings should be changed only through `idf.py menuconfig` so they stay in the ignored `sdkconfig` file.
+- Inbound command/config/control topics are logged and acknowledged in stub mode only. No real controls are executed yet.
 
 ## Planned Raspberry Pi Pieces
 
@@ -29,18 +36,18 @@ If authentication is enabled, store real credentials only in private local confi
 Subscribe to all messages for the node:
 
 ```bash
-mosquitto_sub -h raspberrypi.local -t 'mycodo/remote-node-01/#' -v
+mosquitto_sub -h raspberrypi.local -t 'mycodo/remote/remote-node-01/#' -v
 ```
 
-Publish a fan command:
+Publish a safe stub command:
 
 ```bash
-mosquitto_pub -h raspberrypi.local -t 'mycodo/remote-node-01/command/fan' -m '{"fan_id":"fan_1","enabled":true,"speed_percent":60}'
+mosquitto_pub -h raspberrypi.local -t 'mycodo/remote/remote-node-01/cmd/test' -m '{"command":"ping","note":"stub-only"}'
 ```
 
 ## Future Work
 
-- Decide exact Mycodo topic naming.
+- Confirm a real local Wi-Fi + broker connection using private `sdkconfig` values.
 - Add MQTT authentication guidance.
 - Add TLS guidance if this node ever leaves a trusted local network.
 - Add screenshots or step-by-step Mycodo UI setup notes.

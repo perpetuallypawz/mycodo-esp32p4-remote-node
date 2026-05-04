@@ -190,3 +190,18 @@ Settings:
 Tradeoff:
 
 - The project now assumes the board's standard 32 MB flash configuration, so if a future hardware variant ships with a different flash size, this setting should be revisited deliberately rather than patched ad hoc.
+
+## 2026-05-03: Use The Bundled ESP-MQTT Client And Start It Only After Wi-Fi Connects
+
+Decision: Use ESP-IDF's bundled `mqtt` component with menuconfig-backed broker settings, and only start the MQTT client after the Wi-Fi manager reports a successful connection.
+
+Reasons:
+
+- The bundled ESP-MQTT client is the standard path in ESP-IDF 5.5.4 and fits the current project style without adding another managed dependency.
+- Delaying MQTT startup until Wi-Fi is connected keeps the boot path simple and avoids noisy broker retries when the network is not ready.
+- Menuconfig-backed broker settings keep real broker hosts, usernames, and passwords in the ignored `sdkconfig` file instead of Git-tracked source files.
+- Starting with stub-only inbound command acknowledgements lets the project verify Mycodo/Mosquitto topic flow before any real hardware control is added.
+
+Tradeoff:
+
+- The current milestone proves safe connectivity flow and topic handling, but real end-to-end broker testing still depends on local Wi-Fi and MQTT values that are not shared through Git.

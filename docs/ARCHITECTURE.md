@@ -53,19 +53,21 @@ It should eventually:
 Base topic:
 
 ```text
-mycodo/remote-node-01
+mycodo/remote/{node_id}
 ```
 
-Planned topics:
+Current topics:
 
 | Direction | Topic | Purpose |
 | --- | --- | --- |
-| ESP32-P4 to Pi/Mycodo | `mycodo/remote-node-01/telemetry` | Sensor readings and board status |
-| ESP32-P4 to Pi/Mycodo | `mycodo/remote-node-01/status/ack` | Command acknowledgement |
-| ESP32-P4 to Pi/Mycodo | `mycodo/remote-node-01/status/error` | Error and safety events |
-| Pi/Mycodo to ESP32-P4 | `mycodo/remote-node-01/command/fan` | Fan command |
-| Pi/Mycodo to ESP32-P4 | `mycodo/remote-node-01/command/output` | Generic output command |
-| Pi/Mycodo to ESP32-P4 | `mycodo/remote-node-01/command/config` | Future config update command |
+| ESP32-P4 to Pi/Mycodo | `mycodo/remote/{node_id}/status` | Connection status and retained online message |
+| ESP32-P4 to Pi/Mycodo | `mycodo/remote/{node_id}/heartbeat` | Periodic heartbeat JSON |
+| ESP32-P4 to Pi/Mycodo | `mycodo/remote/{node_id}/telemetry` | Stub telemetry JSON |
+| ESP32-P4 to Pi/Mycodo | `mycodo/remote/{node_id}/event` | Stub acknowledgement and future event messages |
+| ESP32-P4 to Pi/Mycodo | `mycodo/remote/{node_id}/log` | Optional firmware log messages |
+| Pi/Mycodo to ESP32-P4 | `mycodo/remote/{node_id}/cmd/#` | General command topics |
+| Pi/Mycodo to ESP32-P4 | `mycodo/remote/{node_id}/config/#` | Runtime config topics |
+| Pi/Mycodo to ESP32-P4 | `mycodo/remote/{node_id}/control/#` | Future control topics |
 
 More topic notes live in `config/mqtt_topics.md`.
 
@@ -76,6 +78,7 @@ Current status:
 - A basic boot/status screen is implemented with the Waveshare 7B BSP and LVGL.
 - The boot screen has been visually verified by the user on the physical Waveshare LCD.
 - The boot/status screen now also reflects the shared Wi-Fi connection state from `app_state`.
+- The boot/status screen now also reflects the shared MQTT connection state from `app_state`.
 - Touch input is initialized by the BSP, but no touch actions are wired into the app yet.
 - The current display path uses the BSP's standard `bsp_display_start()` flow, and the 1024x600 MIPI display stack depends on PSRAM being enabled for frame-buffer allocation.
 
@@ -95,13 +98,13 @@ LVGL is the planned UI library because it is widely used for embedded touch disp
 Planned telemetry flow:
 
 ```text
-sensor_manager -> app_state -> mqtt_client_manager -> Raspberry Pi/Mycodo
+sensor_manager -> app_state -> mqtt_manager -> Raspberry Pi/Mycodo
 ```
 
 Planned command flow:
 
 ```text
-Raspberry Pi/Mycodo -> MQTT -> mqtt_client_manager -> safety_manager -> control_manager -> output hardware
+Raspberry Pi/Mycodo -> MQTT -> mqtt_manager -> safety_manager -> control_manager -> output hardware
 ```
 
 Planned UI flow:
@@ -119,7 +122,7 @@ touch input -> ui_manager -> safety_manager/control_manager when local control i
 | `app_config.h` | Safe compile-time constants |
 | `app_state.*` | Shared status between managers |
 | `wifi_manager.*` | Hosted Wi-Fi station setup, event logging, retry tracking, and shared Wi-Fi status |
-| `mqtt_client_manager.*` | Future MQTT connection and message handling |
+| `mqtt_manager.*` | MQTT connection management, subscriptions, status/heartbeat/telemetry publishes, and stub acknowledgements |
 | `ui_manager.*` | Current boot/status screen and future LCD/touch UI |
 | `sensor_manager.*` | Future sensor reads |
 | `control_manager.*` | Future output control |

@@ -75,13 +75,19 @@ Suggested commit message: `Add Wi-Fi manager`
 
 ## Milestone: MQTT
 
-Status: Not started.
+Status: Implemented and hardware-verified for safe startup behavior. Real broker connection still needs private local Wi-Fi and MQTT settings.
 
-- [ ] Add ESP-IDF MQTT client setup.
-- [ ] Connect to Mosquitto on the Raspberry Pi 4B.
-- [ ] Subscribe to command topics.
-- [ ] Publish connection status.
-- [ ] Add reconnect behavior.
+- [x] Add ESP-IDF MQTT client setup.
+- [x] Add safe menuconfig-backed MQTT broker settings.
+- [x] Start MQTT only after Wi-Fi is connected.
+- [x] Subscribe to command topics.
+- [x] Publish connection status and heartbeat messages.
+- [x] Publish stub telemetry with null sensor values.
+- [x] Add reconnect behavior through the ESP-MQTT client.
+- [x] Log inbound command/config/control topics and publish stub acknowledgements instead of executing controls.
+- [x] Show MQTT status on the existing boot/status screen.
+- [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
+- [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
 
 Suggested commit message: `Add MQTT manager`
 

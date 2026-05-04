@@ -6,7 +6,7 @@ idf_component_register(
         "main.c"
         "app_state.c"
         "wifi_manager.c"
-        "mqtt_client_manager.c"
+        "mqtt_manager.c"
         "ui_manager.c"
         "sensor_manager.c"
         "control_manager.c"
@@ -23,5 +23,6 @@ idf_component_register(
         freertos
         log
         lwip
+        mqtt
         nvs_flash
 )

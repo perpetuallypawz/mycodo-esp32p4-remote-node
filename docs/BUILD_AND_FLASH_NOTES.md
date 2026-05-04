@@ -4,7 +4,7 @@ This file collects beginner-friendly build, flash, and serial monitor notes for 
 
 ## Current Build Status
 
-This repository is currently an early firmware scaffold with a working first display milestone.
+This repository is currently an early firmware scaffold with working display, Wi-Fi, and first-pass MQTT milestones.
 
 - ESP-IDF build files exist.
 - Modular C source files exist, including a first boot/status screen milestone.
@@ -18,7 +18,7 @@ This repository is currently an early firmware scaffold with a working first dis
 - The project now includes a custom `partitions.csv` file and uses it through `sdkconfig.defaults`.
 - The project now also sets a fixed `32MB` image-header flash size in `sdkconfig.defaults`, which matches the board's physical flash and makes the bootloader report `SPI Flash Size : 32MB`.
 - The default single-app partition was too small once the hosted Wi-Fi components were added. The first custom factory app partition was `1984 KB` (`0x1f0000`), and the current single factory app partition is `0x1ff0000` bytes.
-- The current Wi-Fi-enabled image size is `0x11e610` bytes (`1172624` bytes), leaving `0x1ed19f0` bytes free in the factory app partition.
+- The current Wi-Fi + MQTT-enabled image size is `0x145990` bytes (`1333648` bytes), leaving `0x1eaa670` bytes free in the factory app partition.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
 - The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.
@@ -26,9 +26,11 @@ This repository is currently an early firmware scaffold with a working first dis
 - A later serial-monitor verification on 2026-05-03 showed a clean runtime boot: PSRAM initialization succeeded, the Waveshare BSP reported `Display initialized`, touch was detected, the backlight was set, and `ui_manager` logged that the boot screen was initialized.
 - The user visually confirmed on 2026-05-03 that the boot screen appears on the physical Waveshare LCD, so the first display milestone is now verified both over serial and on hardware.
 
-Before treating the scaffold as board-ready firmware, keep the current display path stable while the next milestone adds MQTT and real network integration.
+Before treating the scaffold as board-ready firmware, keep the current display, Wi-Fi, and MQTT path stable while the next milestone adds richer mock telemetry and real broker verification.
 
 The Wi-Fi initialization milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified with safe placeholder credentials. A real AP connection still requires private local credentials in `sdkconfig`.
+
+The MQTT milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified for safe startup behavior. Real broker connection still requires private local Wi-Fi and MQTT settings in `sdkconfig`.
 
 ## Required Tools
 
@@ -149,6 +151,14 @@ Flash size header: 32MB
 Result: Flash succeeded with the larger single factory app partition and the corrected 32MB image header
 ```
 
+Verified MQTT milestone flash result on 2026-05-03:
+
+```text
+Port: COM3
+MQTT topic root: mycodo/remote/{node_id}
+Result: Flash succeeded, display still initialized, Wi-Fi still failed safely with placeholder settings, and MQTT correctly stayed gated behind Wi-Fi
+```
+
 ## Monitor Logs
 
 After flashing:
@@ -170,6 +180,10 @@ If the monitor finally connects but the startup output shows `Stack dump detecte
 If the monitor instead shows PSRAM coming up, `Display initialized`, touch detection, and `ui_manager: Boot screen initialized with Waveshare BSP and LVGL`, the serial side of the first display milestone is healthy and the next check is the physical LCD.
 
 If the monitor shows the Wi-Fi manager using placeholder credentials, disconnect reason `201`, retry counts, and a final safe failure after the configured retry limit, the current Wi-Fi milestone is behaving as expected without real credentials.
+
+If the monitor shows `mqtt_manager` initialized but no MQTT connection attempt, that is also expected when Wi-Fi never reaches the connected state. The current MQTT manager starts only after Wi-Fi is connected.
+
+If Wi-Fi connects but the MQTT broker host is still `CHANGE_ME_MQTT_HOST`, the MQTT manager should log a placeholder-broker warning and remain in a safe stub state instead of trying to use real credentials.
 
 ## Expected Early Scaffold Logs
 
@@ -193,6 +207,8 @@ Current captured startup result on 2026-05-03:
 - The user visually confirmed the boot screen on the physical LCD.
 - The hosted Wi-Fi stack initializes successfully on `esp32p4`.
 - With the committed placeholder SSID and password, the Wi-Fi manager logs connection attempts, retries up to the configured limit, and then reports a clean failure state instead of retrying forever.
+- The MQTT manager initializes successfully, surfaces MQTT state to the UI, and stays gated behind Wi-Fi.
+- During the verified placeholder-settings run on 2026-05-03, MQTT did not start because Wi-Fi never connected, which is the intended safe behavior.
 
 ## Safe Private Wi-Fi Credentials
 
@@ -213,6 +229,12 @@ Set:
 - `Wi-Fi SSID`
 - `Wi-Fi password`
 - `Wi-Fi maximum retry count` if desired
+- `MQTT broker host or IP`
+- `MQTT broker port`
+- `MQTT username` if used
+- `MQTT password` if used
+- `MQTT base topic root`
+- `MQTT heartbeat interval`
 
 These values are stored in the local `sdkconfig` file, which is already ignored by Git.
 

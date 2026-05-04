@@ -19,16 +19,27 @@ typedef enum {
     APP_NETWORK_WIFI_FAILED
 } app_network_state_t;
 
+typedef enum {
+    APP_MQTT_DISABLED = 0,
+    APP_MQTT_WAITING_FOR_WIFI,
+    APP_MQTT_CONNECTING,
+    APP_MQTT_CONNECTED,
+    APP_MQTT_FAILED
+} app_mqtt_state_t;
+
 typedef struct {
     app_network_state_t network_state;
+    app_mqtt_state_t mqtt_state;
     bool safe_mode_enabled;
     bool config_loaded;
     uint32_t loop_count;
     char node_id[32];
     char network_detail[96];
+    char mqtt_detail[128];
     char status_message[96];
 } app_state_t;
 
 void app_state_init(app_state_t *state);
 void app_state_set_network_detail(app_state_t *state, const char *detail);
+void app_state_set_mqtt_detail(app_state_t *state, const char *detail);
 void app_state_set_status(app_state_t *state, const char *message);

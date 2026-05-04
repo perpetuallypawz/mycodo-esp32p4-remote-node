@@ -46,6 +46,23 @@ static const char *ui_manager_network_state_to_string(app_network_state_t state)
     }
 }
 
+static const char *ui_manager_mqtt_state_to_string(app_mqtt_state_t state)
+{
+    switch (state) {
+    case APP_MQTT_WAITING_FOR_WIFI:
+        return "waiting for Wi-Fi";
+    case APP_MQTT_CONNECTING:
+        return "connecting";
+    case APP_MQTT_CONNECTED:
+        return "connected";
+    case APP_MQTT_FAILED:
+        return "failed";
+    case APP_MQTT_DISABLED:
+    default:
+        return "disabled";
+    }
+}
+
 static void ui_manager_apply_screen_theme(lv_obj_t *screen)
 {
     lv_obj_set_style_bg_color(screen, lv_color_hex(0x0B1220), 0);
@@ -83,7 +100,15 @@ static void ui_manager_sync_labels_locked(const app_state_t *state)
     }
     lv_label_set_text_fmt(s_safe_mode_label, "Safe mode: %s", state->safe_mode_enabled ? "enabled" : "disabled");
     lv_label_set_text_fmt(s_loop_label, "Loop count: %" PRIu32, state->loop_count);
-    lv_label_set_text(s_services_label, "Services: display live | Wi-Fi live | MQTT stub | sensors stub | controls stub");
+    if (state->mqtt_detail[0] != '\0') {
+        lv_label_set_text_fmt(
+            s_services_label,
+            "MQTT: %s | %s",
+            ui_manager_mqtt_state_to_string(state->mqtt_state),
+            state->mqtt_detail);
+    } else {
+        lv_label_set_text_fmt(s_services_label, "MQTT: %s", ui_manager_mqtt_state_to_string(state->mqtt_state));
+    }
     lv_label_set_text_fmt(s_status_label, "Status: %s", state->status_message);
 }
 
