@@ -11,6 +11,7 @@ This repository is currently an early firmware scaffold with working display, Wi
 - The project targets `esp32p4`.
 - The display milestone now depends on `main/idf_component.yml` downloading the Waveshare 7B BSP through the ESP-IDF Component Manager.
 - A full ESP-IDF build was verified on 2026-05-03 for target `esp32p4`.
+- A fresh target configuration and clean full build were verified again on 2026-08-22. The generated local `sdkconfig` targets `esp32p4`, and all `2003` Ninja steps completed successfully.
 - The verified toolchain version is `ESP-IDF v5.5.4`.
 - One small LVGL compatibility fix was needed during build verification: `LV_OPA_95` was replaced with `LV_OPA_90` in `main/ui_manager.c`.
 - The generated `dependencies.lock` file is safe to commit and pins the managed component versions used by the verified build.
@@ -18,7 +19,7 @@ This repository is currently an early firmware scaffold with working display, Wi
 - The project now includes a custom `partitions.csv` file and uses it through `sdkconfig.defaults`.
 - The project now also sets a fixed `32MB` image-header flash size in `sdkconfig.defaults`, which matches the board's physical flash and makes the bootloader report `SPI Flash Size : 32MB`.
 - The default single-app partition was too small once the hosted Wi-Fi components were added. The first custom factory app partition was `1984 KB` (`0x1f0000`), and the current single factory app partition is `0x1ff0000` bytes.
-- The current Wi-Fi + MQTT-enabled image size is `0x145990` bytes (`1333648` bytes), leaving `0x1eaa670` bytes free in the factory app partition.
+- The current Wi-Fi + MQTT-enabled image size is `0x145990` bytes (`1333648` bytes), leaving `0x1eaa670` bytes (96%) free in the factory app partition. The clean 2026-08-22 build produced the same size.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
 - The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.
@@ -42,13 +43,19 @@ The MQTT milestone is now source-implemented, build-verified, flashed, and seria
 
 On Windows, the easiest starting point is usually the ESP-IDF PowerShell or ESP-IDF Command Prompt installed by Espressif's tools installer.
 
-On this machine, a plain PowerShell session needed these ESP-IDF activation details before `idf.py` worked:
+The current Espressif Installation Manager (EIM) setup verified on 2026-08-22 uses:
 
-- `IDF_TOOLS_PATH=C:\Espressif`
-- ESP-IDF framework root: `C:\Espressif\frameworks\esp-idf-v5.5.4`
-- Python environment: `C:\Espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe`
+- `IDF_TOOLS_PATH=C:\Espressif\tools`
+- ESP-IDF framework root: `C:\Espressif\v5.5.4\esp-idf`
+- Python environment: `C:\Espressif\tools\python\v5.5.4\venv\Scripts\python.exe`
+- EIM PowerShell activation profile: `C:\Espressif\tools\Microsoft.v5.5.4.PowerShell_profile.ps1`
 
-On this machine, calling the IDF framework's `export.ps1` directly was more reliable than relying on `Initialize-Idf.ps1`, because the older launcher was still pointing at a stale Python 3.13 environment.
+The older `C:\Espressif\frameworks\esp-idf-v5.5.4` and `C:\Espressif\python_env\idf5.5_py3.11_env` paths are not present in the current installation. Prefer an ESP-IDF terminal opened by the VS Code extension or EIM. If a plain PowerShell session blocks the activation profile, this process-only setup does not change the permanent machine policy:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+. 'C:\Espressif\tools\Microsoft.v5.5.4.PowerShell_profile.ps1'
+```
 
 ## Set Target
 
@@ -57,6 +64,8 @@ From the repository root:
 ```powershell
 idf.py set-target esp32p4
 ```
+
+Run this command after a clean checkout or whenever the ignored `sdkconfig` file is missing. The 2026-08-22 failure showed that Reconfigure can otherwise fall back to the default `esp32` target before it reads the project defaults, which makes the ESP32-P4-only managed components appear incompatible.
 
 The repository also includes `sdkconfig.defaults` with:
 
@@ -84,6 +93,14 @@ If this fails, check:
   - `CONFIG_PARTITION_TABLE_CUSTOM=y`
   - `CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"`
 - Any future managed components have downloaded correctly.
+
+If Windows reports a Python `UnicodeEncodeError` while CMake output contains a character that the legacy CP-1252 console cannot print, set UTF-8 for that terminal process and retry:
+
+```powershell
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+idf.py build
+```
 
 ## Find The Serial Port
 

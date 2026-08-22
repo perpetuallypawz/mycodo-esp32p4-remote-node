@@ -33,6 +33,7 @@ Status: Completed.
 - [x] Create the first commit: `Initial repo scaffold`.
 - [x] Do a first ESP-IDF build check after ESP-IDF is installed. Verified on 2026-05-03 for target `esp32p4`.
 - [x] Commit the generated `dependencies.lock` file so managed component versions stay reproducible across future builds.
+- [x] Recover the local target configuration after `sdkconfig` was missing and complete a clean ESP-IDF 5.5.4 build on 2026-08-22. The regenerated config targets `esp32p4`, all `2003` build steps passed, and the firmware image remains `0x145990` bytes.
 
 Suggested commit message: `Initial repo scaffold`
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-08-22
+
+- Diagnosed the ESP-IDF extension report and confirmed that Reconfigure was falling back to target `esp32` because the generated `sdkconfig` file was missing.
+- Removed only the incomplete, ignored `build/` directory, ran `idf.py set-target esp32p4`, and verified that the regenerated local `sdkconfig` contains `CONFIG_IDF_TARGET="esp32p4"`.
+- Completed a clean ESP-IDF 5.5.4 build with the current EIM-managed installation under `C:\Espressif\v5.5.4`.
+- Verified all `2003` build steps, the ESP32-P4 bootloader, the custom 32 MB flash layout, and the final firmware image.
+- Confirmed the firmware image remains `0x145990` bytes, leaving `0x1eaa670` bytes (96%) free in the `0x1ff0000` factory partition.
+- Recorded the current EIM tool paths and the process-local UTF-8 workaround needed when a legacy Windows console raises a Python `UnicodeEncodeError`.
+- Did not flash the board during this maintenance build.
+
 ## 2026-05-03
 
 - Created the initial ESP-IDF repository scaffold for `mycodo-esp32p4-remote-node`.
