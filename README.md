@@ -1,4 +1,4 @@
-# mycodo-esp32p4-remote-node
+# mycodo-esp32-p4-c6mini-wifi6-touch-lcd-7b-remote-node
 
 Beginner-friendly ESP-IDF firmware scaffold for a Waveshare ESP32-P4-WIFI6-Touch-LCD-7B board that will eventually act as a remote node for a Raspberry Pi 4B running Mycodo.
 
@@ -6,10 +6,10 @@ This repo now includes the first real display milestone and an early Wi-Fi stati
 
 ## 1. What This Firmware Does
 
-This project is intended to become firmware for an ESP32-P4 remote node. In the finished firmware, the board should:
+This project is intended to become firmware for an ESP32-P4-C6 remote node. In the finished firmware, the board should:
 
 - Show a basic boot/status screen on the Waveshare 7-inch display using the board BSP and LVGL.
-- Read sensor values from hardware connected to the ESP32-P4 board.
+- Read sensor values from hardware connected to the ESP32-P4-C6 board.
 - Send telemetry to Mycodo through MQTT.
 - Receive MQTT commands from Mycodo.
 - Control local outputs such as fans, relays, lights, or other safe low-voltage devices.
