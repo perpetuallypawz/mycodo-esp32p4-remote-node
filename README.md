@@ -1,4 +1,4 @@
-# mycodo-esp32-p4-c6mini-wifi6-touch-lcd-7b-remote-node
+# mycodo-esp32-p4-wifi6-touch-lcd-7b-remote-node
 
 Beginner-friendly ESP-IDF firmware scaffold for a Waveshare ESP32-P4-WIFI6-Touch-LCD-7B board that will eventually act as a remote node for a Raspberry Pi 4B running Mycodo.
 
