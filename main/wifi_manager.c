@@ -100,6 +100,21 @@ static wifi_auth_mode_t wifi_manager_get_authmode_threshold(void)
     return WIFI_AUTH_WPA2_PSK;
 }
 
+static void wifi_manager_configure_identifier_safe_logging(void)
+{
+    /*
+     * ESP-IDF's default network handler logs assigned addresses, and hosted
+     * Wi-Fi helpers can log Wi-Fi identifiers. Keep those component messages
+     * below the levels that contain private values. This manager supplies
+     * generic connection state, retry counts, and reason codes instead.
+     */
+    esp_log_level_set("esp_netif_handlers", ESP_LOG_WARN);
+    esp_log_level_set("wifi_remote_default_netif", ESP_LOG_WARN);
+    esp_log_level_set("wifi", ESP_LOG_ERROR);
+    esp_log_level_set("rpc_utils", ESP_LOG_ERROR);
+    esp_log_level_set("RPC_WRAP", ESP_LOG_WARN);
+}
+
 static esp_err_t wifi_manager_init_nvs(void)
 {
     esp_err_t err = nvs_flash_init();
@@ -117,7 +132,7 @@ static void wifi_manager_event_handler(void *arg, esp_event_base_t event_base, i
 
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         wifi_manager_runtime_update(APP_NETWORK_WIFI_CONNECTING, "starting station", 0);
-        ESP_LOGI(TAG, "Wi-Fi station started, connecting to SSID '%s'", s_config.ssid);
+        ESP_LOGI(TAG, "Wi-Fi station started; connecting");
 
         esp_err_t err = esp_wifi_connect();
         if (err != ESP_OK) {
@@ -141,16 +156,14 @@ static void wifi_manager_event_handler(void *arg, esp_event_base_t event_base, i
             snprintf(
                 detail,
                 sizeof(detail),
-                "SSID %s | retry %u/%u | reason %d",
-                s_config.ssid,
+                "retry %u/%u | reason %d",
                 retry_count,
                 s_config.max_retry_count,
                 event != NULL ? event->reason : -1);
             wifi_manager_runtime_update(APP_NETWORK_WIFI_CONNECTING, detail, retry_count);
             ESP_LOGW(
                 TAG,
-                "Wi-Fi disconnected from SSID '%s' (reason %d), retry %u/%u",
-                s_config.ssid,
+                "Wi-Fi disconnected (reason %d), retry %u/%u",
                 event != NULL ? event->reason : -1,
                 retry_count,
                 s_config.max_retry_count);
@@ -165,26 +178,22 @@ static void wifi_manager_event_handler(void *arg, esp_event_base_t event_base, i
             snprintf(
                 detail,
                 sizeof(detail),
-                "SSID %s | giving up after %u retries",
-                s_config.ssid,
-                s_config.max_retry_count);
+                "failed after %u retries | reason %d",
+                s_config.max_retry_count,
+                event != NULL ? event->reason : -1);
             wifi_manager_runtime_update(APP_NETWORK_WIFI_FAILED, detail, retry_count);
-            ESP_LOGE(TAG, "Wi-Fi failed to connect to SSID '%s' after %u retries", s_config.ssid, s_config.max_retry_count);
+            ESP_LOGE(
+                TAG,
+                "Wi-Fi failed after %u retries (last reason %d)",
+                s_config.max_retry_count,
+                event != NULL ? event->reason : -1);
         }
         return;
     }
 
     if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        const ip_event_got_ip_t *event = (const ip_event_got_ip_t *)event_data;
-        char detail[96];
-        snprintf(
-            detail,
-            sizeof(detail),
-            "SSID %s | IP " IPSTR,
-            s_config.ssid,
-            IP2STR(&event->ip_info.ip));
-        wifi_manager_runtime_update(APP_NETWORK_WIFI_CONNECTED, detail, 0);
-        ESP_LOGI(TAG, "Wi-Fi connected to SSID '%s' with IP " IPSTR, s_config.ssid, IP2STR(&event->ip_info.ip));
+        wifi_manager_runtime_update(APP_NETWORK_WIFI_CONNECTED, "network address assigned", 0);
+        ESP_LOGI(TAG, "Wi-Fi connected; network address assigned");
     }
 }
 
@@ -200,6 +209,8 @@ esp_err_t wifi_manager_init(app_state_t *state)
     esp_err_t err;
 
     ESP_RETURN_ON_FALSE(state != NULL, ESP_ERR_INVALID_ARG, TAG, "state is required");
+
+    wifi_manager_configure_identifier_safe_logging();
 
     if (s_wifi_initialized) {
         return wifi_manager_sync_state(state);
@@ -253,8 +264,7 @@ esp_err_t wifi_manager_init(app_state_t *state)
     if (wifi_manager_using_placeholder_credentials()) {
         ESP_LOGW(
             TAG,
-            "Using placeholder Wi-Fi credentials for SSID '%s'; connection is expected to fail until local settings replace them",
-            s_config.ssid);
+            "Using placeholder Wi-Fi settings; connection is expected to fail until local settings replace them");
         ESP_LOGW(
             TAG,
             "Set private Wi-Fi credentials locally with 'idf.py menuconfig' so they stay in the ignored sdkconfig file");
@@ -269,8 +279,7 @@ esp_err_t wifi_manager_init(app_state_t *state)
 
     ESP_LOGI(
         TAG,
-        "Wi-Fi manager initialized in station mode for SSID '%s' with retry limit %u",
-        s_config.ssid,
+        "Wi-Fi manager initialized in station mode with retry limit %u",
         s_config.max_retry_count);
     return ESP_OK;
 }

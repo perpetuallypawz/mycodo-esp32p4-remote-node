@@ -127,6 +127,12 @@ static bool mqtt_manager_using_placeholder_host(void)
     return strcmp(s_config.broker_host, APP_MQTT_PLACEHOLDER_BROKER_HOST) == 0;
 }
 
+static void mqtt_manager_configure_identifier_safe_logging(void)
+{
+    /* ESP-MQTT debug logs include the broker endpoint. Keep them disabled. */
+    esp_log_level_set("mqtt_client", ESP_LOG_INFO);
+}
+
 static uint32_t mqtt_manager_now_ms(void)
 {
     return pdTICKS_TO_MS(xTaskGetTickCount());
@@ -209,11 +215,9 @@ static void mqtt_manager_publish_connected_status(const app_state_t *state)
     snprintf(
         payload,
         sizeof(payload),
-        "{\"node_id\":\"%s\",\"client_id\":\"%s\",\"state\":\"online\",\"broker\":\"%s\",\"port\":%u,\"base_topic\":\"%s\",\"mode\":\"stub-only\"}",
+        "{\"node_id\":\"%s\",\"client_id\":\"%s\",\"state\":\"online\",\"base_topic\":\"%s\",\"mode\":\"stub-only\"}",
         state != NULL ? state->node_id : APP_DEFAULT_NODE_ID,
         s_client_id,
-        s_config.broker_host,
-        s_config.broker_port,
         s_base_topic);
 
     mqtt_manager_publish_message(s_status_topic, payload, 1, 1, "status");
@@ -350,23 +354,19 @@ static void mqtt_manager_event_handler(void *handler_args, esp_event_base_t base
     (void)base;
 
     switch ((esp_mqtt_event_id_t)event_id) {
-    case MQTT_EVENT_CONNECTED: {
-        char detail[MQTT_MANAGER_DETAIL_MAX_LEN];
-
-        snprintf(detail, sizeof(detail), "broker %s:%u", s_config.broker_host, s_config.broker_port);
-        mqtt_manager_runtime_update(APP_MQTT_CONNECTED, detail, true, true, true);
+    case MQTT_EVENT_CONNECTED:
+        mqtt_manager_runtime_update(APP_MQTT_CONNECTED, "broker session active", true, true, true);
         s_last_periodic_publish_tick = 0;
 
-        ESP_LOGI(TAG, "MQTT connected to broker %s:%u as client '%s'", s_config.broker_host, s_config.broker_port, s_client_id);
+        ESP_LOGI(TAG, "MQTT connected as client '%s'", s_client_id);
         mqtt_manager_subscribe_to_topics();
         mqtt_manager_publish_connected_status(state);
         mqtt_manager_publish_stub_heartbeat(state);
         mqtt_manager_publish_stub_telemetry(state);
         break;
-    }
     case MQTT_EVENT_DISCONNECTED:
         mqtt_manager_runtime_update(APP_MQTT_CONNECTING, "broker disconnected, waiting to reconnect", true, false, false);
-        ESP_LOGW(TAG, "MQTT disconnected from broker %s:%u", s_config.broker_host, s_config.broker_port);
+        ESP_LOGW(TAG, "MQTT disconnected; waiting to reconnect");
         break;
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT subscribed successfully, msg_id=%d", event != NULL ? event->msg_id : -1);
@@ -419,7 +419,6 @@ static esp_err_t mqtt_manager_stop_client(const char *detail, app_mqtt_state_t m
 static esp_err_t mqtt_manager_start_client(const app_state_t *state)
 {
     esp_mqtt_client_config_t mqtt_cfg = {0};
-    char detail[MQTT_MANAGER_DETAIL_MAX_LEN];
 
     if (!s_config.enabled) {
         mqtt_manager_runtime_update(APP_MQTT_DISABLED, "MQTT disabled", false, false, false);
@@ -431,8 +430,7 @@ static esp_err_t mqtt_manager_start_client(const app_state_t *state)
         if (!s_placeholder_host_warning_logged) {
             ESP_LOGW(
                 TAG,
-                "Using placeholder MQTT broker host '%s'; MQTT will stay disabled until local menuconfig values replace it",
-                s_config.broker_host);
+                "Using placeholder MQTT broker settings; MQTT will stay disabled until local menuconfig values replace them");
             ESP_LOGW(
                 TAG,
                 "Set private local MQTT broker settings with 'idf.py menuconfig' so they stay in the ignored sdkconfig file");
@@ -477,9 +475,8 @@ static esp_err_t mqtt_manager_start_client(const app_state_t *state)
         return ESP_FAIL;
     }
 
-    snprintf(detail, sizeof(detail), "broker %s:%u", s_config.broker_host, s_config.broker_port);
-    mqtt_manager_runtime_update(APP_MQTT_CONNECTING, detail, true, false, false);
-    ESP_LOGI(TAG, "Starting MQTT client for broker %s:%u on base topic %s", s_config.broker_host, s_config.broker_port, s_base_topic);
+    mqtt_manager_runtime_update(APP_MQTT_CONNECTING, "starting broker connection", true, false, false);
+    ESP_LOGI(TAG, "Starting MQTT client on base topic %s", s_base_topic);
     if (esp_mqtt_client_start(s_client) != ESP_OK) {
         ESP_LOGE(TAG, "esp_mqtt_client_start failed");
         esp_mqtt_client_destroy(s_client);
@@ -501,6 +498,8 @@ esp_err_t mqtt_manager_init(app_state_t *state)
 {
     ESP_RETURN_ON_FALSE(state != NULL, ESP_ERR_INVALID_ARG, TAG, "state is required");
 
+    mqtt_manager_configure_identifier_safe_logging();
+
     if (s_manager_initialized) {
         return mqtt_manager_sync_state(state);
     }
@@ -510,7 +509,7 @@ esp_err_t mqtt_manager_init(app_state_t *state)
     state->mqtt_state = APP_MQTT_WAITING_FOR_WIFI;
     s_manager_initialized = true;
 
-    ESP_LOGI(TAG, "MQTT manager initialized for broker host '%s' on port %u", s_config.broker_host, s_config.broker_port);
+    ESP_LOGI(TAG, "MQTT manager initialized; waiting for Wi-Fi");
     return ESP_OK;
 }
 

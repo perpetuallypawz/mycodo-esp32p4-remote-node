@@ -71,6 +71,23 @@ Current topics:
 
 More topic notes live in `config/mqtt_topics.md`.
 
+## Network Privacy Boundary
+
+Private network configuration is used only to establish connections. The
+configured Wi-Fi SSID, assigned IP address, MQTT broker hostname or IP, broker
+port, and all credentials must not be emitted through the display, serial logs,
+or MQTT messages. Do not print masked substitutes for these values; omit them.
+
+Observable diagnostics should use generic states such as Wi-Fi connecting,
+Wi-Fi connected, Wi-Fi failed, MQTT connecting, MQTT connected, and MQTT
+failed. Retry counts, disconnect reason codes, transport error codes, MQTT
+topics, and message IDs remain useful non-secret diagnostics.
+
+The current MQTT transport is plain TCP for a trusted local network only. The
+broker listener on port `1883` must not be exposed through router port
+forwarding or directly to the internet. TLS remains a later security
+consideration before using MQTT outside the trusted local network.
+
 ## UI Structure
 
 Current status:

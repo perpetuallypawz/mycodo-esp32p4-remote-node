@@ -66,6 +66,7 @@ Status: Implemented and hardware-verified with safe placeholder credentials. Rea
 - [x] Load safe placeholder settings first.
 - [x] Decide how private local Wi-Fi credentials will be provided. Current choice: `idf.py menuconfig`, which stores them in the ignored `sdkconfig` file.
 - [x] Show Wi-Fi connection state in logs and UI.
+- [x] Keep the configured SSID and assigned IP address out of serial logs and UI state while preserving generic connection states, retry counts, and reason codes.
 - [x] Add the hosted Wi-Fi component dependencies required by `esp32p4`.
 - [x] Increase the single factory app partition size with a project-local `partitions.csv` so the display + Wi-Fi firmware fits.
 - [x] Align the image header with the board's physical 32 MB flash and re-verify boot on `COM3`.
@@ -87,6 +88,8 @@ Status: Implemented and hardware-verified for safe startup behavior. Real broker
 - [x] Add reconnect behavior through the ESP-MQTT client.
 - [x] Log inbound command/config/control topics and publish stub acknowledgements instead of executing controls.
 - [x] Show MQTT status on the existing boot/status screen.
+- [x] Keep the broker hostname or IP and broker port out of serial logs, UI state, and published MQTT payloads.
+- [x] Rebuild the privacy-hardened firmware with the existing ESP-IDF 5.5.4 `esp32p4` configuration. All 4 incremental Ninja steps passed on 2026-09-20.
 - [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
 - [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
 

@@ -19,7 +19,7 @@ This repository is currently an early firmware scaffold with working display, Wi
 - The project now includes a custom `partitions.csv` file and uses it through `sdkconfig.defaults`.
 - The project now also sets a fixed `32MB` image-header flash size in `sdkconfig.defaults`, which matches the board's physical flash and makes the bootloader report `SPI Flash Size : 32MB`.
 - The default single-app partition was too small once the hosted Wi-Fi components were added. The first custom factory app partition was `1984 KB` (`0x1f0000`), and the current single factory app partition is `0x1ff0000` bytes.
-- The current Wi-Fi + MQTT-enabled image size is `0x145990` bytes (`1333648` bytes), leaving `0x1eaa670` bytes (96%) free in the factory app partition. The clean 2026-08-22 build produced the same size.
+- The clean pre-redaction Wi-Fi + MQTT image built on 2026-08-22 was `0x145990` bytes (`1333648` bytes). The privacy-hardened image was rebuilt with ESP-IDF 5.5.4 on 2026-09-20; all 4 incremental Ninja steps passed. The image is `0x1458e0` bytes (`1333472` bytes), leaving `0x1eaa720` bytes (96%) free in the factory app partition.
 - A successful hardware flash was completed on 2026-05-03 with `idf.py -p COM3 flash`.
 - The board on `COM3` reports `ESP32-P4 revision v1.3`.
 - The display-init panic was traced to `esp_lcd_new_panel_dpi(): no memory for frame buffer` because PSRAM was not enabled in the project defaults.

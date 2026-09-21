@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-20
+
+- Removed the configured Wi-Fi SSID, assigned IP address, MQTT broker endpoint, and broker port from serial logs, UI state, and published MQTT status.
+- Kept useful generic connection states, Wi-Fi retry counts and reason codes, MQTT transport error codes, topics, and message IDs without printing masked network identifiers.
+- Documented that the current plain-TCP MQTT milestone is limited to a trusted local network, with no router port forwarding or direct internet exposure; TLS remains later work.
+- Rebuilt successfully with the existing ESP-IDF 5.5.4 `esp32p4` configuration: all 4 incremental Ninja steps passed and the firmware image is `0x1458e0` bytes (`1333472` bytes). The board was not flashed.
+
 ## 2026-08-22
 
 - Diagnosed the ESP-IDF extension report and confirmed that Reconfigure was falling back to target `esp32` because the generated `sdkconfig` file was missing.
