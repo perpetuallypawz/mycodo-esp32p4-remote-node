@@ -2,6 +2,8 @@
 
 ## 2026-09-20
 
+- Merged refreshed `origin/main` at `6038a21` into `feature/mqtt-manager`, keeping the MQTT manager and network-privacy changes while adopting the newer README board and project wording.
+- Built the merged firmware successfully with ESP-IDF 5.5.4; all 1,992 Ninja steps passed, the image remains `0x1458e0` bytes, and the board was not flashed.
 - Removed the configured Wi-Fi SSID, assigned IP address, MQTT broker endpoint, and broker port from serial logs, UI state, and published MQTT status.
 - Kept useful generic connection states, Wi-Fi retry counts and reason codes, MQTT transport error codes, topics, and message IDs without printing masked network identifiers.
 - Documented that the current plain-TCP MQTT milestone is limited to a trusted local network, with no router port forwarding or direct internet exposure; TLS remains later work.

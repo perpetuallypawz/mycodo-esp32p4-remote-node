@@ -90,6 +90,7 @@ Status: Implemented and hardware-verified for safe startup behavior. Real broker
 - [x] Show MQTT status on the existing boot/status screen.
 - [x] Keep the broker hostname or IP and broker port out of serial logs, UI state, and published MQTT payloads.
 - [x] Rebuild the privacy-hardened firmware with the existing ESP-IDF 5.5.4 `esp32p4` configuration. All 4 incremental Ninja steps passed on 2026-09-20.
+- [x] Merge refreshed `origin/main` at `6038a21` into `feature/mqtt-manager` while preserving the MQTT and network-privacy work. The merged firmware completed all 1,992 ESP-IDF 5.5.4 build steps successfully on 2026-09-20 and was not flashed.
 - [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
 - [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
 
