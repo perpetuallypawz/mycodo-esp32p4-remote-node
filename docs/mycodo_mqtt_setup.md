@@ -16,6 +16,8 @@ User-supplied Pi CLI evidence established:
   remains unverified.
 - `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl` owned by
   `root:mosquitto` with mode `640`.
+- Username-only password-database readback confirmed `esp32_node01`, `mqtt_test` and
+  `mycodo_app` are present.
 - Anonymous and deliberately incorrect-password connections rejected.
 - Protected `mqtt_test` login accepted and able to read `$SYS/broker/version`.
 - Exact `mycodo/remote/remote-node-01/cmd/test` publish accepted with MQTT v5 PUBACK
@@ -55,12 +57,8 @@ protected per-user Mosquitto client configuration files with mode `600`; do not 
 their contents. Wildcard binding can include overlay interfaces, so assess actual exposure
 and firewall rules before treating the listener as LAN-only.
 
-One evidence gap remains before client commissioning: capture a username-only readback
-confirming all three approved accounts without displaying password hashes:
-
-```bash
-sudo awk -F: 'NF {print $1}' /etc/mosquitto/mycodo.passwd
-```
+The username-only account readback is complete. Account presence does not prove that the
+HMI and Mycodo application credentials work; verify each in its actual client.
 
 ## Existing firmware commissioning
 

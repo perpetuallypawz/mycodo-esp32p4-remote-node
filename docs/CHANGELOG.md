@@ -6,6 +6,8 @@
   runtime version 2.0.21 from user-supplied Pi CLI evidence.
 - Recorded `root:mosquitto` ownership and mode `640` for
   `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`.
+- Confirmed by username-only readback that `esp32_node01`, `mqtt_test` and
+  `mycodo_app` are present in the password database.
 - Documented the deployed least-privilege ACL for `esp32_node01`, `mycodo_app` and
   `mqtt_test` without copying passwords, hashes or a private broker address.
 - Verified that anonymous and deliberately incorrect-password connections are rejected.

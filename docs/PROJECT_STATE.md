@@ -56,7 +56,8 @@ deduplication, physical feedback, independent critical queues or receiver stale 
 The historical firmware build passed; the ESP32-P4 has not yet been commissioned on the
 real Wi-Fi/broker path. Mycodo and HMI client authentication are not yet end-to-end tested.
 Passwords, SSIDs and broker endpoints remain private local configuration.
-The final username-only readback for `mycodo_app` was not captured in the supplied evidence.
+The password database contains all three approved account names; this confirms account
+presence, not successful HMI or Mycodo application authentication.
 Do not store a fixed live LAN address in the committed state register.
 
 ## Verified Pi broker security checkpoint (2026-10-02)
@@ -66,6 +67,8 @@ Do not store a fixed live LAN address in the committed state register.
   IPv6. Firewall and interface exposure beyond localhost remain unverified.
 - `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl` were present with
   `root:mosquitto` ownership and mode `640`.
+- A username-only readback confirmed `esp32_node01`, `mqtt_test` and `mycodo_app`
+  are present in the password database.
 - Anonymous connection and a deliberately incorrect `mqtt_test` password were rejected.
 - The protected CLI configuration authenticated as `mqtt_test` and read the retained
   `$SYS/broker/version` value.
@@ -86,8 +89,8 @@ implemented display software use the Waveshare 7B BSP/name. Confirm the printed 
 board vendor/model before changing the canonical hardware label. The functional name
 `ESP32-P4 Remote HMI Node` and logical ID `remote-node-01` remain stable either way.
 
-Next: capture the final username-only account readback, then configure the existing
-firmware privately and verify `esp32_node01` authentication plus three fresh heartbeats.
+Next: configure the existing firmware privately and verify `esp32_node01`
+authentication plus three fresh heartbeats.
 See RECONCILIATION_AUDIT.md and DECISIONS.md. Do not re-ask A–K.
 
 Inventory backlog: add two December 2025 Midwest Grow Kits Mushroom Ecosphere 3.0
@@ -103,9 +106,10 @@ kits to the current tracker after locating it. No inventory spreadsheet was modi
 
 Approved password database: `/etc/mosquitto/mycodo.passwd`.
 Approved ACL: `/etc/mosquitto/mycodo.acl`.
-These paths are deployed and their permissions were verified. Broker behavior proves that
-authentication and the `mqtt_test` ACL are loaded. The supplied final evidence does not yet
-prove `esp32_node01` or `mycodo_app` end-to-end authentication.
+These paths are deployed and their permissions were verified. A username-only readback
+confirms all three approved accounts are present. Broker behavior proves that authentication
+and the `mqtt_test` ACL are loaded; it does not yet prove `esp32_node01` or
+`mycodo_app` end-to-end authentication.
 No password or live broker address belongs in Git. The Phase One ACL grants:
 
 - `esp32_node01`: write status, heartbeat, telemetry, event and log; read `cmd/#`,

@@ -294,8 +294,8 @@ privately. Mycodo uses `mycodo_app`; diagnostics use
 `mqtt_test`. Broker file targets are `/etc/mosquitto/mycodo.passwd` and
 `/etc/mosquitto/mycodo.acl`. Both files were observed with `root:mosquitto` ownership
 and mode `640`; anonymous denial, incorrect-password denial, allowed `mqtt_test`
-publish and forbidden-topic denial passed. Capture the final username-only account list
-before device commissioning; HMI and Mycodo client authentication remain unverified.
+publish and forbidden-topic denial passed. A username-only readback confirmed all three
+approved accounts are present; HMI and Mycodo client authentication remain unverified.
 Approval B fixes the Phase One menuconfig root to `mycodo/remote`; do not enter
 the expanded node path there. Heartbeat is `mycodo/remote/remote-node-01/heartbeat`.
 See the setup notes for the verified broker checkpoint and remaining client tests.

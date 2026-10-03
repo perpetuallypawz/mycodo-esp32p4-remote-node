@@ -347,8 +347,9 @@ Affected files: PROJECT_STATE, README, PROJECT_CONTEXT, ARCHITECTURE, setup,
 BUILD_AND_FLASH_NOTES, NEXT_STEPS, CHANGELOG, topics and RECONCILIATION_AUDIT.
 Supersedes: `esp32_remote_01` and `/etc/mosquitto/passwd` as recommended canonical targets.
 Status: approved design and deployed file targets. Local authentication plus the
-`mqtt_test` ACL were verified on 2026-10-02; individual HMI and Mycodo client
-authentication remain pending. Exact access is recorded in MQTT-ACL-001 below.
+`mqtt_test` ACL were verified on 2026-10-02, and a username-only readback confirmed all
+three approved accounts are present. Individual HMI and Mycodo client authentication
+remain pending. Exact access is recorded in MQTT-ACL-001 below.
 
 ## 2026-10-02: MQTT-ACL-001 — deployed Phase One access
 

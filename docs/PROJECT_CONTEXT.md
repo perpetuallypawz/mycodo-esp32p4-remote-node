@@ -64,8 +64,7 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Capture the final username-only broker-account readback, then configure the existing
-firmware through `idf.py menuconfig`. Keep `sdkconfig` private and verify
+Configure the existing firmware through `idf.py menuconfig`. Keep `sdkconfig` private and verify
 `esp32_node01` authentication plus three fresh Phase One heartbeat publications.
 
 After that, expand the current stub telemetry into a dedicated mock telemetry milestone before connecting real sensors or outputs.

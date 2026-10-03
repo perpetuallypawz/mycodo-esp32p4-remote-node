@@ -21,6 +21,8 @@ authentication and diagnostic ACL verified in follow-up. Original audit baseline
   inspection, security-file metadata, username-only/ACL output, anonymous and
   incorrect-password rejection, protected `mqtt_test` broker-version read, allowed
   `cmd/test` publish and denied `control/test` publish. No password or hash was supplied.
+- S09: final username-only password-database readback (2026-10-02, America/Phoenix)
+  confirmed `esp32_node01`, `mqtt_test` and `mycodo_app` are present.
 
 Code establishes implementation; answers establish user intent; current device output
 establishes deployment. The original audit had no live Pi/laptop/ESP32 verification; S08
@@ -109,8 +111,8 @@ Separate future client names from physical node IDs.
 **Resolution:** Approved MQTT-SECURITY-001 targets HMI `esp32_node01`, Mycodo
 `mycodo_app`, diagnostics `mqtt_test`. `esp32_remote_01` is superseded as a recommended
 target. S08 verifies `mqtt_test` authentication; HMI and Mycodo application client
-authentication remain unverified. A final username-only readback for all three accounts
-was not captured.
+authentication remain unverified. S09 confirms all three approved account records exist
+without exposing hashes.
 
 **Destination:** PROJECT_STATE; setup; DECISIONS
 
@@ -356,6 +358,9 @@ protected diagnostic client authenticated, read the retained broker version, rec
 PUBACK reason 16 for its exact allowed test topic, and received reason 135 for the forbidden
 control topic. Reason 16 is a successful publish acknowledgement indicating no matching
 subscriber; reason 135 is not authorized.
+
+S09 closes the username-presence evidence gap for all three approved accounts. It does not
+by itself authenticate the HMI or Mycodo application clients.
 
 This evidence closes the local broker authentication and diagnostic-authorization
 checkpoint only. It does not close ESP32-P4 Wi-Fi/MQTT commissioning, `mycodo_app`

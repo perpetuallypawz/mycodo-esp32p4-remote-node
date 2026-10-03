@@ -16,7 +16,7 @@ not merge main; PR 1 remains the later review path to main.
       with mode `640` and `root:mosquitto` ownership.
 - [x] Reject anonymous and incorrect-password connections; verify `mqtt_test` login,
       allowed `cmd/test` publish and forbidden `control/test` denial.
-- [ ] Capture a final username-only readback confirming `esp32_node01`, `mycodo_app`
+- [x] Capture a final username-only readback confirming `esp32_node01`, `mycodo_app`
       and `mqtt_test` are all present; do not display hashes.
 - [ ] Privately configure existing menuconfig settings; keep root mycodo/remote and heartbeat 30 s.
 - [ ] Verify `esp32_node01` and `mycodo_app` authentication in their actual clients.
