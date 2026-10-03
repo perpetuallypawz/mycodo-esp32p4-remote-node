@@ -17,7 +17,8 @@ This project is intended to become firmware for an ESP32-P4-C6 remote node. In t
 - Store non-secret local settings in flash memory.
 - Keep safety logic separate from normal control logic.
 
-Right now, the code provides a working boot/status screen, early Wi-Fi station initialization, and placeholder modules for the remaining future features.
+Right now, the code provides a working boot/status screen, Wi-Fi station initialization,
+and an MQTT manager with stub-only commands. Real sensors and outputs remain placeholders.
 
 ## 2. What This Firmware Does NOT Do
 
@@ -179,21 +180,20 @@ Ctrl+]
 
 ## 9. Test MQTT With Mosquitto
 
-If Mosquitto is installed on the Raspberry Pi, you can test the current MQTT milestone after setting real local Wi-Fi and MQTT settings through `idf.py menuconfig`.
+Read [the setup notes](docs/mycodo_mqtt_setup.md) before running broker tests. Approved
+security targets are HMI `esp32_node01`, Mycodo `mycodo_app`, diagnostics `mqtt_test`,
+password database `/etc/mosquitto/mycodo.passwd` and ACL `/etc/mosquitto/mycodo.acl`.
+These targets are not evidence of installed accounts. Inspect the Pi configuration first,
+then prepare and validate its security configuration before the board test.
 
-Subscribe to telemetry:
+Use the validated `mqtt_test` identity and a supported protected client configuration
+for CLI tests; do not put literal passwords in commands. Observe three fresh periodic
+heartbeats on `mycodo/remote/remote-node-01/heartbeat`. A permitted test command
+on `mycodo/remote/remote-node-01/cmd/test` should produce a simulation-only event.
+Test allowed login, anonymous denial and unauthorized-topic denial separately.
+No stub acknowledgement proves physical actuator operation.
 
-```bash
-mosquitto_sub -h raspberrypi.local -t 'mycodo/remote/remote-node-01/#' -v
-```
-
-Publish a safe stub command:
-
-```bash
-mosquitto_pub -h raspberrypi.local -t 'mycodo/remote/remote-node-01/cmd/test' -m '{"command":"ping","note":"stub-only"}'
-```
-
-See [examples/sample_mqtt_messages](examples/sample_mqtt_messages) for safe example payloads.
+See [examples/sample_mqtt_messages](examples/sample_mqtt_messages) for payload examples.
 
 ## 10. Safely Edit Wi-Fi And MQTT Settings
 
@@ -248,10 +248,10 @@ Set:
 - `Wi-Fi maximum retry count` if you want a different retry limit
 - `MQTT broker host or IP`
 - `MQTT broker port`
-- `MQTT username` if used
-- `MQTT password` if used
-- `MQTT base topic root`
-- `MQTT heartbeat interval`
+- `MQTT username`: approved target `esp32_node01` after broker validation
+- `MQTT password`: private credential for the validated HMI account
+- `MQTT base topic root`: exactly `mycodo/remote` (node ID is appended)
+- `MQTT heartbeat interval`: 30 seconds for commissioning
 
 Then build and flash again:
 
@@ -328,6 +328,8 @@ It does not yet contain real-sensor or real-output logic, and it does not commit
 Before future code edits, read:
 
 - [AGENTS.md](AGENTS.md)
+- [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md)
+- [docs/RECONCILIATION_AUDIT.md](docs/RECONCILIATION_AUDIT.md)
 - [docs/PROJECT_CONTEXT.md](docs/PROJECT_CONTEXT.md)
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [docs/DECISIONS.md](docs/DECISIONS.md)
@@ -340,3 +342,11 @@ After meaningful future edits, update:
 - [docs/CHANGELOG.md](docs/CHANGELOG.md)
 
 Also update any relevant documentation when a meaningful code, configuration, wiring, architecture, build, or behavior change is made. The docs should let a future Codex session understand the project without relying on chat history.
+
+## Reconciled project entry point
+
+Read [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) first and use the review matrix in
+[docs/RECONCILIATION_AUDIT.md](docs/RECONCILIATION_AUDIT.md). The existing MQTT manager
+is implemented; current network commissioning and real output control remain unverified.
+Approval A defines three account/file targets; approval B retains the Phase One topic tree.
+Follow the setup document for read-only discovery and authenticated commissioning.

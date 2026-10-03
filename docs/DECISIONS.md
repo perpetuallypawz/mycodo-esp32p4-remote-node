@@ -205,3 +205,166 @@ Reasons:
 Tradeoff:
 
 - The current milestone proves safe connectivity flow and topic handling, but real end-to-end broker testing still depends on local Wi-Fi and MQTT values that are not shared through Git.
+
+## Recovered A–K user decisions
+
+Source S06 answers paired with S05 questions. Original approval dates are not supplied;
+recorded 2026-10-02. These preserve user intent without claiming runtime verification.
+
+### MQTT-A
+
+Question: Which grow tent is the primary production chamber and are there multiple chambers?
+
+Answer: The AC Infinity CLOUDLAB 866 is the primary outer enclosure. It contains the laminar hood on the stainless table, lab stool and two five-tier Martha tents. martha-tent-01 is Inoculation Chamber 1; martha-tent-02 is Pinning and Fruiting Chamber 2. The separate 18×18×32 inch test incubator, its temperature controller and convection climate control unit are excluded from Project Mycodo.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; ARCHITECTURE.
+
+Status and supersession: Supersedes uncertainty about the primary tent. Exact device-to-chamber mapping remains open.
+
+### MQTT-B
+
+Question: Have MQTT topics already been committed, is Pi 4B Mosquitto the production broker, is Mycodo on the same Pi, and is Phase One LAN-local?
+
+Answer: Yes: Mosquitto on Pi 4B is the production broker; Mycodo runs on that same Pi; Phase One stays LAN-local without a cloud MQTT bridge. Ashley left the heartbeat field blank. Code inspection, not an inferred user answer, identifies mycodo/remote/remote-node-01/heartbeat on the MQTT branch.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; ARCHITECTURE; topics.
+
+Status and supersession: Supersedes likely-broker wording. Does not establish installation or authentication test results.
+
+### MQTT-C
+
+Question: Should the HMI be read-only initially or be able to issue actuator commands in Phase One?
+
+Answer: C2 means the ESP32-P4 HMI should be able to issue actuator commands in Phase One.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: DECISIONS; ARCHITECTURE; NEXT_STEPS.
+
+Status and supersession: Supersedes the C1 recommendation as desired production scope. Hardware control remains unimplemented; commissioning remains stub-only.
+
+### MQTT-D
+
+Question: Which devices should appear as active MQTT actuators?
+
+Answer: Selected: CLOUDLINE PRO T6, CLOUDLINE PRO S6, CLOUDRAY S6, THERMOFORGE T7, CLOUDFORGE T7, Tapo P316M power strip and Kasa HS300 power strip. Future: 5 V 8-channel relay board, 12 V 8-channel relay board, MOSFET output modules and CO₂ sampling pump.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; ARCHITECTURE; NEXT_STEPS.
+
+Status and supersession: Selection is not proof of integration. Interface, control owner, chamber and safe operating behavior require verification per device.
+
+### MQTT-E
+
+Question: What is the current humidifier or fogger?
+
+Answer: AC Infinity CLOUDFORGE T7.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; DECISIONS.
+
+Status and supersession: Supersedes the returned T5 as the project humidifier. Electrical specifications are unverified in this audit.
+
+### MQTT-F
+
+Question: Which sensors belong in Phase One and which are future or reference-only?
+
+Answer: Phase One: SHT45 PTFE temperature/RH; SHT41 as its validation sensor; one DHT22; one DHT11; optical membrane soil-moisture demonstrator. Future: DS18B20 probes, MH-Z19C CO₂ and PMS5003. Temtop P1 is described as an MQTT reference sensor and manual validation only; interpret conservatively as manual reference until its intended interface is clarified.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; DECISIONS; NEXT_STEPS.
+
+Status and supersession: These selections do not establish drivers or calibrated readings. Do not give an experimental moisture demonstrator safety authority without validation.
+
+### MQTT-G
+
+Question: How should the MH-Z19C CO₂ system be represented now?
+
+Answer: G1 means include the full CO₂ namespace as Near Future and Blocked, with activation dependent on completion and validation of the sampling assembly. Do not automate it yet.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; DECISIONS; topics.
+
+Status and supersession: Supersedes the need to choose among G1/G2/G3. Specific missing parts still need inventory verification.
+
+### MQTT-H
+
+Question: Is the CO₂ sampling path standardized on 3/16 inch or 1/4 inch tubing?
+
+Answer: Keep the original June plan for 3/16 inch tubing. Recently purchased tubing belongs to the Luer Lok mason-jar-lid customization project, not the CO₂ sampling system.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; DECISIONS.
+
+Status and supersession: Resolves the tubing choice without asserting the complete assembly is available.
+
+### MQTT-I
+
+Question: Are there approved cultivation thresholds or should they remain configurable?
+
+Answer: Define warning/high-rh, alarm/critical-high-rh, alarm/critical-low-rh, warning/low-rh, warning/high-co2, alarm/critical-high-co2, alarm/high-temp and alarm/low-temp. Do not hardcode RH, CO₂ or temperature thresholds. Targets vary by species, incubation/fruiting stage and experiment; thresholds remain TBD.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: DECISIONS; topics; ARCHITECTURE.
+
+Status and supersession: The condition names are approved semantics; full publish paths and numeric thresholds are not approved by this answer.
+
+### MQTT-J
+
+Question: Is there physical feedback confirming that actuators actually operate?
+
+Answer: No physical feedback yet.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: DECISIONS; ARCHITECTURE; NEXT_STEPS.
+
+Status and supersession: Separate delivery/control faults from process-response faults. Never label a stub or MQTT acknowledgement physically verified.
+
+### MQTT-K
+
+Question: Which Mycodo version is installed on the Pi?
+
+Answer: Ashley reports Mycodo 8.16.2.
+
+Source: S05 question and S06 answer. Approval date: not supplied.
+Recorded: 2026-10-02. Affected files: PROJECT_STATE; setup.
+
+Status and supersession: Version is user-reported. It does not validate specific plugin screens, the Python version or database paths.
+
+## 2026-10-02: MQTT-SECURITY-001 — approval A
+
+Question: Which account names and Mosquitto security files are canonical for the
+reconciliation: the single-account older guide or the three-account model?
+
+Answer: Ashley approved A: HMI `esp32_node01`, Mycodo `mycodo_app`, diagnostics
+`mqtt_test`, password database `/etc/mosquitto/mycodo.passwd`, ACL
+`/etc/mosquitto/mycodo.acl`.
+
+Source: current user message “Approve A + B”, approving the reconciliation recommendations
+derived from S01/S04. Approval date: 2026-10-02 (America/Phoenix).
+Affected files: PROJECT_STATE, README, PROJECT_CONTEXT, ARCHITECTURE, setup,
+BUILD_AND_FLASH_NOTES, NEXT_STEPS, CHANGELOG, topics and RECONCILIATION_AUDIT.
+Supersedes: `esp32_remote_01` and `/etc/mosquitto/passwd` as recommended canonical targets.
+Status: approved design; live installation and authentication unverified.
+Do not destroy an existing working configuration. Inspect, back up, plan migration and
+test legitimate access, anonymous rejection and unauthorized-topic rejection first.
+Exact ACL rules, listener configuration and credentials are separate deployment details.
+
+## 2026-10-02: MQTT-NAMESPACE-001 — approval B
+
+Question: Should Phase One retain the implemented topic tree or migrate immediately to
+the priority-aware production namespace proposals?
+
+Answer: Ashley approved B: keep `mycodo/remote/{node_id}/...` in Phase One;
+menuconfig root stays `mycodo/remote` and firmware appends the node ID. Preserve
+`mycodo/local/...` and expanded proposals as future V2 references requiring explicit migration.
+
+Source: current user message “Approve A + B”, approving the reconciliation recommendations.
+Approval date: 2026-10-02 (America/Phoenix).
+Affected files: PROJECT_STATE, README, PROJECT_CONTEXT, ARCHITECTURE, topics,
+setup, BUILD_AND_FLASH_NOTES, NEXT_STEPS, CHANGELOG and RECONCILIATION_AUDIT.
+Supersedes: conflicting immediate root-change recommendations in S01/S04/S05 and
+the malformed `mycodo/remote-node-01` path in S02.
+Status: approved design aligned with existing firmware. This does not approve a V2
+grammar, tier count, 250 ms deadline, new QoS policy or deployed safety behavior.

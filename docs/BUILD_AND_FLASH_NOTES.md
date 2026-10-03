@@ -248,10 +248,10 @@ Set:
 - `Wi-Fi maximum retry count` if desired
 - `MQTT broker host or IP`
 - `MQTT broker port`
-- `MQTT username` if used
-- `MQTT password` if used
-- `MQTT base topic root`
-- `MQTT heartbeat interval`
+- `MQTT username`: approved target `esp32_node01` after broker validation
+- `MQTT password`: private credential for the validated HMI account
+- `MQTT base topic root`: exactly `mycodo/remote` (node ID is appended)
+- `MQTT heartbeat interval`: 30 seconds for commissioning
 
 These values are stored in the local `sdkconfig` file, which is already ignored by Git.
 
@@ -275,3 +275,23 @@ If the board reboots repeatedly, disconnect attached output hardware and review 
 First flash tests should be done with real pumps, relays, humidifiers, heaters, and mains-voltage devices disconnected.
 
 GPIO output control should only be added after the wiring, relay/driver hardware, fail-safe behavior, and command timeout behavior are documented.
+
+## Reconciled commissioning evidence
+
+The latest documented build did not flash the board. It does not establish real broker access.
+Use the existing EIM/toolchain notes; sample C:\Projects paths are not confirmed user paths.
+Verify actual COM port and local repository status first. Do not commit sdkconfig or build images
+containing private credentials. Current privacy-safe Wi-Fi success text is
+`Wi-Fi connected; network address assigned`; MQTT logs `MQTT connected as client`.
+Do not expect literal SSID/IP/endpoint output or restore those logs for troubleshooting.
+On Wi-Fi retry exhaustion, no recovery supervisor is implemented; record the limitation.
+
+## Approved local MQTT settings
+
+Approval A sets the target HMI username to `esp32_node01`; configure its password
+privately only after broker validation. Mycodo uses `mycodo_app`; diagnostics use
+`mqtt_test`. Broker file targets are `/etc/mosquitto/mycodo.passwd` and
+`/etc/mosquitto/mycodo.acl`, with deployment unverified.
+Approval B fixes the Phase One menuconfig root to `mycodo/remote`; do not enter
+the expanded node path there. Heartbeat is `mycodo/remote/remote-node-01/heartbeat`.
+See the setup notes for read-only Pi inspection before any configuration or flashing.

@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-10-02: Reconcile project memory and approved A + B
+
+- Prepared a commit-pinned source audit and full A–K decision records.
+- Added project state and a conflict register with proposed and verified status separated.
+- Replaced stale main-based MQTT implementation guidance with discovery-first commissioning.
+- Preserved existing MQTT firmware, topic root and privacy behavior.
+- No firmware build, hardware test, Pi configuration change or main merge was performed.
+- Recorded approval A: `esp32_node01`, `mycodo_app`, `mqtt_test`,
+  `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl` as security targets,
+  with live deployment explicitly unverified.
+- Recorded approval B: existing Phase One tree retained; priority-aware expanded topics
+  preserved for a future explicit V2 migration.
+- Strengthened AGENTS startup, documentation, conflict-resolution and handoff requirements.
+- Dedicated documentation review targets the existing MQTT branch; publication details
+  are recorded in GitHub and the task handoff.
+
+
 ## 2026-09-20
 
 - Merged refreshed `origin/main` at `6038a21` into `feature/mqtt-manager`, keeping the MQTT manager and network-privacy changes while adopting the newer README board and project wording.
