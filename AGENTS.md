@@ -7,12 +7,16 @@ Repository-specific instructions for Codex and other AI coding agents.
 At the start of every future task, read these files before editing code:
 
 - `AGENTS.md`
+- `docs/PROJECT_STATE.md`
 - `README.md`
 - `docs/PROJECT_CONTEXT.md`
 - `docs/ARCHITECTURE.md`
 - `docs/DECISIONS.md`
 - `docs/NEXT_STEPS.md`
 - `docs/BUILD_AND_FLASH_NOTES.md`
+- `docs/RECONCILIATION_AUDIT.md`
+- `config/mqtt_topics.md`
+- `docs/mycodo_mqtt_setup.md`
 
 At the end of every future task, update:
 
@@ -85,8 +89,7 @@ When a meaningful change is made:
 ## Reconciled project governance
 
 Start every task by verifying repository identity, branch, HEAD, upstream and working-tree
-status. Fetch current remote refs. Read docs/PROJECT_STATE.md, docs/RECONCILIATION_AUDIT.md,
-config/mqtt_topics.md and docs/mycodo_mqtt_setup.md in addition to the Read First list.
+status. Fetch current remote refs. Follow the complete Read First list above.
 Do not overwrite uncommitted user work or switch branches blindly.
 
 Classify every fact as approved, implemented, reported, verified, proposed or blocked.

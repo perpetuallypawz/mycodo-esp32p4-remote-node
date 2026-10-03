@@ -62,6 +62,10 @@ A and B are approved below. P0–P3 versus P0–P4 remains unresolved; the four-
 scheme is proposed. The 90-second stale threshold needs a decision and receiver logic.
 A 250 ms deadline is unapproved and unproven. Exact ACL rules and listener binding
 await inspection. Actuator interfaces, chamber mapping and Temtop data access are open.
+Repository history reports KLAYERS hardware naming, while current project text and the
+implemented display software use the Waveshare 7B BSP/name. Confirm the printed physical
+board vendor/model before changing the canonical hardware label. The functional name
+`ESP32-P4 Remote HMI Node` and logical ID `remote-node-01` remain stable either way.
 
 Next: review the dedicated documentation PR, then gather read-only Pi configuration
 evidence before preparing a concrete broker migration and authenticated commissioning SOP.

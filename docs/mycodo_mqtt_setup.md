@@ -90,8 +90,13 @@ sudo stat -c '%U:%G %a %n' /etc/mosquitto/passwd /etc/mosquitto/mycodo.passwd /e
 systemctl show mosquitto -p FragmentPath -p DropInPaths -p ExecStart
 ```
 
-If rg is absent, use `sudo grep -RInE --include='*.conf'` with the same
-expression and directory. Review configuration output privately; share only redacted evidence.
+If `rg` is absent, use this exact fallback:
+
+```bash
+sudo grep -RInE --include='*.conf' '^[[:space:]]*(include_dir|listener|allow_anonymous|password_file|acl_file|per_listener_settings|persistence)([[:space:]]|$)' /etc/mosquitto
+```
+
+Review configuration output privately; share only redacted evidence.
 Missing stat paths are useful evidence. Do not create files in response to those errors.
 If inactive, inspect `sudo journalctl -u mosquitto -n 40 --no-pager` privately.
 

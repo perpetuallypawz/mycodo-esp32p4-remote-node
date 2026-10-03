@@ -13,6 +13,10 @@
 - Recorded approval B: existing Phase One tree retained; priority-aware expanded topics
   preserved for a future explicit V2 migration.
 - Strengthened AGENTS startup, documentation, conflict-resolution and handoff requirements.
+- Added PROJECT_STATE, the audit, topics and broker setup directly to the AGENTS startup list.
+- Recorded KLAYERS/Waveshare physical-board naming as unresolved pending hardware confirmation.
+- Redacted the historical LAN address from the conflict register and made the read-only
+  Pi command fallback fully copyable.
 - Dedicated documentation review targets the existing MQTT branch; publication details
   are recorded in GitHub and the task handoff.
 

@@ -22,6 +22,8 @@ Use its current GitHub HEAD/PR for the documentation commit; no main merge is au
 - [ ] Test broker restart separately from Wi-Fi retry exhaustion and node power loss.
 - [ ] Decide future V2 grammar, migration/rollback plan and priority tiers explicitly;
       Phase One stays on `mycodo/remote/{node_id}/...` under approval B.
+- [ ] Confirm the printed physical board vendor/model before reconciling KLAYERS versus
+      Waveshare naming; keep the functional HMI name and `remote-node-01` unchanged.
 - [ ] Implement CI documentation checks with full-PR-diff coverage.
 - [ ] Design/validate HMI outbound requests and each actuator interface before real control.
 

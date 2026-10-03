@@ -49,13 +49,18 @@ is approved. An approved target is not evidence of installation.
 
 ## R03 Node and client identity
 
-**Repo:** Physical/logical node: remote-node-01. MQTT client ID: node ID plus last 3 MAC bytes as hex.
+**Repo:** Logical node: remote-node-01. MQTT client ID: node ID plus last 3 MAC bytes as hex.
+Commit 397a4ea reported KLAYERS in its message/title change; commit 6038a21 later removed
+`c6mini` from the title while current prose and dependencies retain Waveshare 7B naming.
 
 **Competing sources:** S01/S04 also propose remote-node-01-control, -health, -telemetry.
 
 **Ashley answer:** C2 defines HMI authority, not its connection identity.
 
-**Proposal:** Use ESP32-P4 Remote HMI Node for the hardware. Keep current ID generation. Separate future client names from physical node IDs.
+**Proposal:** Use ESP32-P4 Remote HMI Node as the functional name and keep current ID
+generation. Treat KLAYERS versus Waveshare as an unresolved physical-label question;
+confirm the printed board before changing it. A BSP name is a software implementation detail.
+Separate future client names from physical node IDs.
 
 **Destination:** PROJECT_STATE; ARCHITECTURE
 
@@ -111,7 +116,8 @@ is approved. An approved target is not evidence of installation.
 
 **Repo:** PR and NEXT_STEPS still require real Wi-Fi and broker tests.
 
-**Competing sources:** S02 reports installation 2.0.21 and failed password creation. S01/S04 claim service and LAN tests passed, open mode used, IP 192.168.1.86.
+**Competing sources:** S02 reports installation 2.0.21 and failed password creation.
+S01/S04 claim service and LAN tests passed, open mode used and a specific LAN address.
 
 **Ashley answer:** B confirms intended broker location, not authenticated operation.
 
