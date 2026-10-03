@@ -11,11 +11,12 @@ This snapshot describes the audited baseline; it is not a verified deployment.
 - Existing open review: https://github.com/perpetuallypawz/mycodo-esp32p4-remote-node/pull/1.
 
 The MQTT branch is four commits ahead of main. Do not recreate its MQTT manager.
-Documentation review branch: `reconcile/mqtt-project-state-2026-10-02`, based on the MQTT implementation baseline.
-Review targets `feature/mqtt-manager`; PR 1 remains the later firmware path to main.
-Nothing is merged by this reconciliation. Use the review branch HEAD and task handoff
-for the documentation commit SHA; verify live refs next session. The SHAs above are
-implementation audit snapshots, not a claim that the review branch still has that HEAD.
+Documentation reconciliation is recorded in PR 2 from
+`reconcile/mqtt-project-state-2026-10-02` to `feature/mqtt-manager`, based on the MQTT
+implementation baseline. Formal review passed and Ashley authorized that merge on
+2026-10-02. PR 1 remains the later firmware path to main; PR 2 does not merge main.
+Use current GitHub refs and the task handoff for final merge/branch SHAs. The SHAs above
+are implementation audit snapshots, not a claim that a branch still has that HEAD.
 
 ## Approved scope from S06 and code-confirmed identity
 
@@ -67,8 +68,8 @@ implemented display software use the Waveshare 7B BSP/name. Confirm the printed 
 board vendor/model before changing the canonical hardware label. The functional name
 `ESP32-P4 Remote HMI Node` and logical ID `remote-node-01` remain stable either way.
 
-Next: review the dedicated documentation PR, then gather read-only Pi configuration
-evidence before preparing a concrete broker migration and authenticated commissioning SOP.
+Next: gather read-only Pi configuration evidence before preparing a concrete broker
+migration and authenticated commissioning SOP.
 See RECONCILIATION_AUDIT.md and DECISIONS.md. Do not re-ask A–K.
 
 Inventory backlog: add two December 2025 Midwest Grow Kits Mushroom Ecosphere 3.0

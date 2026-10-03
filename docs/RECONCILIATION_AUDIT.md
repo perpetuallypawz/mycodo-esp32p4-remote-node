@@ -43,7 +43,10 @@ is approved. An approved target is not evidence of installation.
 
 **Ashley answer:** Audit and reconcile before publishing changes.
 
-**Resolution:** Prepare `reconcile/mqtt-project-state-2026-10-02` from the refreshed MQTT head and open a draft documentation PR targeting `feature/mqtt-manager`. After review, documentation can be integrated into that branch; PR 1 remains the later main review path. Do not merge either PR in this task.
+**Resolution:** PR 2 uses `reconcile/mqtt-project-state-2026-10-02` from the refreshed
+MQTT head and targets `feature/mqtt-manager`. Formal review passed and Ashley authorized
+the PR 2 merge on 2026-10-02. PR 1 remains the later main review path; this authorization
+does not merge PR 1 or main.
 
 **Destination:** PROJECT_STATE; NEXT_STEPS
 

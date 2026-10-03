@@ -17,6 +17,8 @@
 - Recorded KLAYERS/Waveshare physical-board naming as unresolved pending hardware confirmation.
 - Redacted the historical LAN address from the conflict register and made the read-only
   Pi command fallback fully copyable.
+- Formally reviewed PR 2 and recorded Ashley's authorization to integrate it into
+  `feature/mqtt-manager`; PR 1 remains the separate future path to main.
 - Dedicated documentation review targets the existing MQTT branch; publication details
   are recorded in GitHub and the task handoff.
 

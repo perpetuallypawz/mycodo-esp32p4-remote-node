@@ -6,11 +6,12 @@ The documentation below is based on MQTT implementation baseline
 `aa18533cb7caf94af830689c0b00e5ee548f8f8a`. Refresh remote refs before the next task.
 Do not recreate MQTT. A–K decisions are recovered in DECISIONS.md. A + B were
 approved on 2026-10-02. Documentation review branch: `reconcile/mqtt-project-state-2026-10-02`.
-The branch is based on the SHA above and targets `feature/mqtt-manager` for review.
-Use its current GitHub HEAD/PR for the documentation commit; no main merge is authorized.
+The branch is based on the SHA above and targets `feature/mqtt-manager`. PR 2 passed
+formal review and Ashley authorized its merge on 2026-10-02. This does not merge main;
+use current GitHub refs for the final feature/reconciliation branch SHAs.
 
 - [x] Record approval A + B and reconcile governing documentation together.
-- [ ] Review the dedicated documentation PR before integrating it into the MQTT branch.
+- [x] Review and authorize PR 2 for integration into the MQTT branch.
 - [ ] Inspect the current Pi package/service/listener/security-file plan read-only.
 - [ ] Back up inspected configuration and plan migration to `esp32_node01`, `mycodo_app`,
       `mqtt_test`, `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
