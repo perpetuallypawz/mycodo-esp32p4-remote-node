@@ -25,7 +25,7 @@ The Raspberry Pi 4B is the main controller.
 It should:
 
 - Run Mycodo.
-- Run or connect to the MQTT broker.
+- Host the authoritative local Mosquitto MQTT broker for Phase One.
 - Store long-term data.
 - Host dashboards and automation logic.
 - Decide high-level control behavior.
@@ -146,3 +146,62 @@ touch input -> ui_manager -> safety_manager/control_manager when local control i
 | `storage_manager.*` | Future non-secret persistent settings |
 | `safety_manager.*` | Future fail-safe logic |
 | `log_manager.*` | Startup and structured logging helpers |
+
+## Reconciled user scope and implementation boundary
+
+Pi 4B hosts Mycodo and the authoritative local Mosquitto broker. No Phase One cloud bridge.
+The outer CLOUDLAB contains martha-tent-01 inoculation and martha-tent-02 pinning/fruiting.
+Do not silently rename these scopes or include the separate test incubator.
+The HMI is command-capable by approved C2 design intent, but its outbound request path,
+Pi authorization, real actuator interfaces and safe behavior are not implemented yet.
+Existing inbound stub subscriptions do not implement outbound HMI authority.
+
+Do not assert that selected AC Infinity devices already speak MQTT or that a power-strip
+command provides speed control. Establish the interface and control owner per actuator.
+No physical operation feedback is presently available. Distinguish request acceptance,
+reported controller state and measured physical behavior.
+
+## Priority design still awaiting approval and implementation
+
+The proposed four-tier meanings are P0 critical alarms, control-critical requests and actuator
+faults; P1 warnings and health transitions; P2 health/status snapshots and heartbeats;
+P3 routine telemetry. The later five-tier proposal and 250 ms deadline are not approved.
+Keep numeric biological thresholds TBD. CO2 stays reserved and blocked.
+
+One MQTT client currently carries all traffic. Separate client queues/tasks, telemetry
+coalescing/drop policies, receiver dispatch and bounded resources need design and testing.
+Separate clients share Wi-Fi, broker and CPU; they alone cannot prove a latency guarantee.
+Safety behavior must remain local when messaging fails. No real controls may be enabled
+before documented interface, timeout, expiry, duplicate handling and failure tests.
+
+Wildcard listener binding may include an overlay interface; verify actual listener and
+firewall behavior. Explicit LAN binding needs a stable address and recovery testing.
+
+## Approved A: MQTT security target (2026-10-02)
+
+| Role | Approved username |
+| --- | --- |
+| ESP32-P4 HMI | `esp32_node01` |
+| Mycodo application | `mycodo_app` |
+| CLI diagnostics | `mqtt_test` |
+
+Approved password database: `/etc/mosquitto/mycodo.passwd`.
+Approved ACL: `/etc/mosquitto/mycodo.acl`.
+These are canonical design targets. Their presence, loaded configuration, credentials,
+permissions and successful authentication are not verified on the Pi.
+Inspect and back up the existing configuration before a planned migration; preserve
+working access until the approved targets pass tests. Approval does not authorize
+overwriting an existing password database or prove an ACL has been installed.
+No password or live broker address belongs in Git. Exact ACL rules and listener binding
+remain to be reviewed after discovery; the diagnostic role is not automatically an admin.
+
+## Approved B: Phase One namespace (2026-10-02)
+
+Keep `mycodo/remote/{node_id}/...` for Phase One. Menuconfig root is exactly
+`mycodo/remote`; the firmware appends `remote-node-01`. The heartbeat topic is
+`mycodo/remote/remote-node-01/heartbeat`.
+Preserve priority-aware `mycodo/local/...` and expanded topic proposals as future V2
+design references. Do not apply them to current producers, consumers or ACLs.
+A V2 migration needs an explicit approved grammar, implementation changes, acceptance
+tests and rollback plan. This approval does not choose P0–P3 versus P0–P4, establish
+a latency deadline, or implement priority handling.

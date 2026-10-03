@@ -7,12 +7,16 @@ Repository-specific instructions for Codex and other AI coding agents.
 At the start of every future task, read these files before editing code:
 
 - `AGENTS.md`
+- `docs/PROJECT_STATE.md`
 - `README.md`
 - `docs/PROJECT_CONTEXT.md`
 - `docs/ARCHITECTURE.md`
 - `docs/DECISIONS.md`
 - `docs/NEXT_STEPS.md`
 - `docs/BUILD_AND_FLASH_NOTES.md`
+- `docs/RECONCILIATION_AUDIT.md`
+- `config/mqtt_topics.md`
+- `docs/mycodo_mqtt_setup.md`
 
 At the end of every future task, update:
 
@@ -81,3 +85,38 @@ When a meaningful change is made:
 - Add an entry to `docs/CHANGELOG.md` with the date and a short summary.
 - If the architecture or design assumptions change, update `docs/ARCHITECTURE.md` or `docs/DECISIONS.md`.
 - If build, flash, serial monitor, target, port, or ESP-IDF setup details change, update `docs/BUILD_AND_FLASH_NOTES.md`.
+
+## Reconciled project governance
+
+Start every task by verifying repository identity, branch, HEAD, upstream and working-tree
+status. Fetch current remote refs. Follow the complete Read First list above.
+Do not overwrite uncommitted user work or switch branches blindly.
+
+Classify every fact as approved, implemented, reported, verified, proposed or blocked.
+An exported file is reference material; explicit user approvals remain authoritative
+even before PR review. Incorporate them in repository decisions with a clear source.
+A draft PR records approved intent but does not establish deployed runtime behavior.
+Pair every question with its complete answer, approval date if known,
+source, affected files and superseded decision. Never save answer codes alone.
+
+Preserve existing node IDs and implemented topic grammar. Apply approved account/file
+targets from DECISIONS.md in documentation; inspect and migrate live settings deliberately
+before deployment. Do not reinterpret A + B as approval of priority tiers or real control.
+If sources conflict, resolve the specific conflict before implementing it;
+continue unrelated audit work.
+Never rerun MQTT implementation merely because a guide was written against older main.
+
+For an authorized repository change, update implementation and affected memory docs
+together. NEXT_STEPS and CHANGELOG are required; architecture, decisions, topics and
+build notes are required when those contracts change. Use one active writing branch.
+Commit and push authorized changes; explicitly report if either operation is unavailable.
+Report changed files, validation, branch, commit SHA, push result, git status, next checkpoint
+and unresolved choices. Never imply that a push updates the user's laptop checkout.
+
+Add a reviewed CI documentation check for firmware/configuration pull requests as a
+separate implementation milestone; file-presence checks do not prove semantic accuracy.
+
+For API-only repository work, report that no full local checkout or upstream tracking
+exists; verify the published branch SHA and changed-file scope instead of inventing
+a clean working-tree status. Keep PROJECT_STATE authoritative for current status,
+DECISIONS for approvals, RECONCILIATION_AUDIT for conflicts and NEXT_STEPS for action.
