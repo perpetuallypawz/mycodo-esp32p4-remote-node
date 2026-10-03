@@ -2,6 +2,19 @@
 
 This file collects beginner-friendly build, flash, and serial monitor notes for future sessions.
 
+## Latest supplied hardware result (2026-10-03)
+
+Ashley built and flashed source `d098f261` on COM3 using ESP-IDF 5.5.4 and manually
+corrected local sdkconfig values. Serial output then identified the C6, initialized SDIO,
+obtained a network address and connected to MQTT. Pi CLI output confirmed five fresh
+periodic heartbeats, stub telemetry and a matching command acknowledgement. See
+[MQTT_COMMISSIONING_2026-10-03.md](MQTT_COMMISSIONING_2026-10-03.md).
+
+The tracked defaults now capture the non-secret transport correction. This is not a
+claim that a clean configuration from this PR has already been built or flashed.
+The older image-size/build counts below describe their dated builds, not the corrected
+transport image. Actual Mycodo application, recovery and production reliability remain open.
+
 ## Current Build Status
 
 This repository is currently an early firmware scaffold with working display, Wi-Fi, and first-pass MQTT milestones.
@@ -27,11 +40,14 @@ This repository is currently an early firmware scaffold with working display, Wi
 - A later serial-monitor verification on 2026-05-03 showed a clean runtime boot: PSRAM initialization succeeded, the Waveshare BSP reported `Display initialized`, touch was detected, the backlight was set, and `ui_manager` logged that the boot screen was initialized.
 - The user visually confirmed on 2026-05-03 that the boot screen appears on the physical Waveshare LCD, so the first display milestone is now verified both over serial and on hardware.
 
-Before treating the scaffold as board-ready firmware, keep the current display, Wi-Fi, and MQTT path stable while the next milestone adds richer mock telemetry and real broker verification.
+Before treating the scaffold as production-ready firmware, keep the current display,
+Wi-Fi and MQTT path stable while checking reproducibility, warnings and recovery.
 
-The Wi-Fi initialization milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified with safe placeholder credentials. A real AP connection still requires private local credentials in `sdkconfig`.
+Wi-Fi initialization and real AP connection are verified by the latest supplied output.
+New installations still require private local credentials in `sdkconfig`.
 
-The MQTT milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified for safe startup behavior. Real broker connection still requires private local Wi-Fi and MQTT settings in `sdkconfig`.
+MQTT startup and real broker stub messaging are verified by the latest supplied output.
+New installations still require private local Wi-Fi and MQTT settings in `sdkconfig`.
 
 ## Required Tools
 
@@ -66,6 +82,10 @@ idf.py set-target esp32p4
 ```
 
 Run this command after a clean checkout or whenever the ignored `sdkconfig` file is missing. The 2026-08-22 failure showed that Reconfigure can otherwise fall back to the default `esp32` target before it reads the project defaults, which makes the ESP32-P4-only managed components appear incompatible.
+
+Do not rerun `set-target` just to import new defaults into an existing commissioned
+configuration: it reinitializes configuration and can lose private/local choices.
+Use the migration below and keep the working sdkconfig private.
 
 The repository also includes `sdkconfig.defaults` with:
 
@@ -190,6 +210,8 @@ To leave the monitor:
 Ctrl+]
 ```
 
+Alternative: press Ctrl+T, release the keys, then press X. Ctrl+J is not the quit shortcut.
+
 If `monitor` fails with `Access is denied` on a valid COM port, check for a stale `idf.py monitor` or `idf_monitor.py` process still holding the serial port open.
 
 If the monitor finally connects but the startup output shows `Stack dump detected`, `_esp_error_check_failed`, or a backtrace into `bsp_display_lcd_init`, the problem has moved past USB/COM-port setup and into runtime display initialization.
@@ -278,7 +300,8 @@ GPIO output control should only be added after the wiring, relay/driver hardware
 
 ## Reconciled commissioning evidence
 
-The latest documented build did not flash the board. It does not establish real broker access.
+At the 2026-10-02 reconciliation, the historical build did not establish real broker access.
+The 2026-10-03 supplied output above supersedes that unverified connectivity status.
 Use the existing EIM/toolchain notes; sample C:\Projects paths are not confirmed user paths.
 Verify actual COM port and local repository status first. Do not commit sdkconfig or build images
 containing private credentials. Current privacy-safe Wi-Fi success text is
@@ -291,7 +314,97 @@ On Wi-Fi retry exhaustion, no recovery supervisor is implemented; record the lim
 Approval A sets the target HMI username to `esp32_node01`; configure its password
 privately only after broker validation. Mycodo uses `mycodo_app`; diagnostics use
 `mqtt_test`. Broker file targets are `/etc/mosquitto/mycodo.passwd` and
-`/etc/mosquitto/mycodo.acl`, with deployment unverified.
+`/etc/mosquitto/mycodo.acl`. Later supplied evidence records security-file permissions,
+approved account names and diagnostic login/denial tests; see the commissioning record
+and separate PR 3 for the remaining deployment limits.
 Approval B fixes the Phase One menuconfig root to `mycodo/remote`; do not enter
 the expanded node path there. Heartbeat is `mycodo/remote/remote-node-01/heartbeat`.
 See the setup notes for read-only Pi inspection before any configuration or flashing.
+
+## Hosted Wi-Fi defaults and migration for existing sdkconfig
+
+Updating `sdkconfig.defaults` supplies choices for a new configuration; it does not
+overwrite choices in an existing sdkconfig. Do not delete, print, paste or commit the
+working private config. Keep any backup private too. This PR does not modify local
+credentials, router settings, Pi files, C6 firmware or the dependency lock.
+
+If updating an older checkout, run `idf.py menuconfig` and search with `/` for these
+symbols. Only change the transport selections that differ; preserve network credentials
+and application settings. Save, then build before flashing.
+
+| Symbol | Required choice |
+| --- | --- |
+| `ESP_HOST_WIFI_ENABLED` | Disabled |
+| `ESP_WIFI_REMOTE_ENABLED` | Enabled |
+| `SLAVE_IDF_TARGET_ESP32C6` | Selected |
+| `ESP_WIFI_REMOTE_LIBRARY_HOSTED` | Selected |
+| `ESP_HOSTED_ENABLED` | Enabled; separate from choosing the backend |
+| `ESP_HOSTED_CP_TARGET_ESP32C6` | Selected |
+| `ESP_HOSTED_SDIO_HOST_INTERFACE` | Selected |
+| `ESP_HOSTED_P4_DEV_BOARD_NONE` | Selected, allowing explicit board GPIOs |
+| `ESP_HOSTED_SDIO_SLOT_1` / `ESP_HOSTED_SDIO_4_BIT_BUS` | Selected |
+| `ESP_HOSTED_SDIO_CLOCK_FREQ_KHZ` | 40000 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_CLK_SLOT_1` | 18 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_CMD_SLOT_1` | 19 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_D0_SLOT_1` | 14 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_D1_4BIT_BUS_SLOT_1` | 15 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_D2_4BIT_BUS_SLOT_1` | 16 |
+| `ESP_HOSTED_PRIV_SDIO_PIN_D3_4BIT_BUS_SLOT_1` | 17 |
+| `ESP_HOSTED_SDIO_GPIO_RESET_SLAVE` | 54 |
+| `ESP_HOSTED_SDIO_RESET_ACTIVE_HIGH` | Selected; High -> Low -> High reset sequence |
+| `ESP_HOSTED_SDIO_OPTIMIZATION_RX_STREAMING_MODE` | Selected |
+
+The slot, width and `ESP_HOSTED_SDIO_PIN_*` integers in generated sdkconfig are
+derived values. Set the visible choices and slot-specific GPIO settings above rather
+than assigning the hidden generated integers directly. The readback filter below
+checks the derived values that the transport actually uses.
+The successful existing commissioning worktree already has the working transport;
+no immediate rebuild or reflash is needed merely because this PR was published.
+
+## Separate fresh-defaults configuration check (not yet performed)
+
+After this PR is available in the checkout being checked, use a separate build directory
+and generated sdkconfig under the already ignored `build/` tree. This configuration-only
+check keeps the working root sdkconfig and build untouched; it uses placeholder credentials
+and does not flash hardware. It still requires an activated ESP-IDF 5.5.4 terminal and may
+download locked managed components. Inspect Git status before and after.
+
+Run each command separately from that checkout's root:
+
+```powershell
+git status --short --branch
+```
+
+```powershell
+$mqttDefaultsCheckConfig = Join-Path (Get-Location).Path 'build\defaults-check\sdkconfig'
+```
+
+```powershell
+Test-Path -LiteralPath $mqttDefaultsCheckConfig
+```
+
+Continue only if that returns `False`; an existing check config would not prove fresh
+generation. If it exists, stop and choose another unused path instead of deleting it.
+
+```powershell
+idf.py -B build/defaults-check -D "SDKCONFIG=$mqttDefaultsCheckConfig" -D IDF_TARGET=esp32p4 reconfigure
+```
+
+Read back only non-secret transport fields:
+
+```powershell
+Select-String -LiteralPath $mqttDefaultsCheckConfig -Pattern '^(# )?CONFIG_(ESP_HOST_WIFI_ENABLED|ESP_WIFI_REMOTE_ENABLED|ESP_WIFI_REMOTE_LIBRARY_HOSTED|SLAVE_IDF_TARGET_ESP32C6|ESP_HOSTED_ENABLED|ESP_HOSTED_CP_TARGET_ESP32C6|ESP_HOSTED_SDIO_(HOST_INTERFACE|SLOT|BUS_WIDTH|CLOCK_FREQ_KHZ|PIN_(CLK|CMD|D[0-3])|GPIO_RESET_SLAVE|RESET_ACTIVE_HIGH|OPTIMIZATION_RX_STREAMING_MODE))(=| is not set)'
+```
+
+Expect Host Wi-Fi disabled, both remote/hosted switches enabled, C6 selected, SDIO
+slot 1, width 4 and the table's clock/GPIO values. Record unknown-symbol/configuration
+warnings rather than ignoring them. A successful reconfigure is only configuration proof;
+the new build/runtime acceptance remains a separate check. Do not flash this
+placeholder-credential check configuration as if it were the commissioned firmware.
+
+## Remaining startup diagnostics
+
+The passing run still had a recovered `ESP_ERR_WIFI_CONN`, a host/coprocessor version
+warning and the GPIO 32 LEDC warning. See the evidence checkpoint for exact limits.
+Investigate them before unattended use; do not erase flash, force a C6 update, upgrade
+the BSP/toolchain, change router settings or suppress warnings as a blanket fix.
