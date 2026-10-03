@@ -20,6 +20,11 @@ This project is intended to become firmware for an ESP32-P4-C6 remote node. In t
 Right now, the code provides a working boot/status screen, Wi-Fi station initialization,
 and an MQTT manager with stub-only commands. Real sensors and outputs remain placeholders.
 
+On 2026-10-03, Ashley supplied successful real Wi-Fi and Pi Mosquitto test output:
+periodic heartbeats, stub telemetry and a matching command acknowledgement were received.
+See [the commissioning checkpoint](docs/MQTT_COMMISSIONING_2026-10-03.md) for the
+tested ESP32-C6 transport settings, evidence limits and unresolved warnings.
+
 ## 2. What This Firmware Does NOT Do
 
 This scaffold does not yet:
@@ -186,6 +191,10 @@ password database `/etc/mosquitto/mycodo.passwd` and ACL `/etc/mosquitto/mycodo.
 These targets are not evidence of installed accounts. Inspect the Pi configuration first,
 then prepare and validate its security configuration before the board test.
 
+For this project's current test results, use the dated commissioning checkpoint above;
+discovery and account validation are prerequisites for a new installation, not a request
+to overwrite this Pi's working security files. Mycodo application login is still unverified.
+
 Use the validated `mqtt_test` identity and a supported protected client configuration
 for CLI tests; do not put literal passwords in commands. Observe three fresh periodic
 heartbeats on `mycodo/remote/remote-node-01/heartbeat`. A permitted test command
@@ -261,6 +270,11 @@ idf.py -p COM3 flash
 ```
 
 The [.gitignore](.gitignore) file is already set up to avoid committing `sdkconfig`, common private config files, build output, and temporary monitor logs.
+
+New defaults do not replace existing local sdkconfig choices. If updating an older checkout,
+follow the hosted Wi-Fi migration notes in
+[BUILD_AND_FLASH_NOTES.md](docs/BUILD_AND_FLASH_NOTES.md); do not delete private settings
+or rerun `set-target` on the working commissioned configuration just to apply this change.
 
 ## 11. Troubleshooting
 
@@ -347,6 +361,7 @@ Also update any relevant documentation when a meaningful code, configuration, wi
 
 Read [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) first and use the review matrix in
 [docs/RECONCILIATION_AUDIT.md](docs/RECONCILIATION_AUDIT.md). The existing MQTT manager
-is implemented; current network commissioning and real output control remain unverified.
+is implemented; real-network stub messaging was verified from supplied output on
+2026-10-03, while Mycodo application integration and real output control remain unverified.
 Approval A defines three account/file targets; approval B retains the Phase One topic tree.
 Follow the setup document for read-only discovery and authenticated commissioning.

@@ -2,6 +2,21 @@
 
 Date: 2026-10-02. Status: reconciled documentation; A + B approved, PR review pending. Baseline: `aa18533cb7caf94af830689c0b00e5ee548f8f8a`.
 
+Historical audit below is retained as recorded. Follow-up recorded 2026-10-03:
+PR 2 merged at `d098f261`; Ashley supplied current configuration, serial and Pi CLI
+evidence establishing C6 transport and real-network stub messaging. R08's requirement
+for current evidence and R21's three-fresh-heartbeat check are now satisfied for this
+checkpoint. R09 exposure and R22 recovery remain open; Mycodo and real control are
+not verified. The node log does not expose its username, so account mapping is not
+inferred. See [MQTT_COMMISSIONING_2026-10-03.md](MQTT_COMMISSIONING_2026-10-03.md)
+and current PROJECT_STATE rather than treating the historical deployment claims as current.
+
+The incorrect tracked Host Wi-Fi setting is corrected under WIFI-TRANSPORT-001.
+Primary-source Kconfig checks and supplied hardware settings inform this change; no
+credential-bearing config or raw screenshot is committed. Separate broker-authentication
+PR 3 remains unmerged and unchanged by this follow-up. Shared memory-document edits
+will need reconciliation when that PR is integrated.
+
 ## Source register
 
 - S01: attachment 01 MQTT Deployment Checklist Review and Configuration DOCX, undated.

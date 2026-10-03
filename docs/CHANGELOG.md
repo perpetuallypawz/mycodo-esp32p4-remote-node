@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-10-03: Preserve the working C6 Wi-Fi path and MQTT checkpoint
+
+- Replaced the incorrect Host Wi-Fi default with enabled Wi-Fi Remote and ESP-HOSTED,
+  including the separate hosted-component switch and ESP32-C6 target selection.
+- Recorded the tested SDIO slot, bus width, clock, GPIOs, reset selection and receive mode.
+  Preserved placeholder credentials, five-retry default, dependency lock and flash/PSRAM layout.
+- Added the supplied-evidence commissioning record: real Wi-Fi, MQTT session, subscriptions,
+  Pi-received status/heartbeat/telemetry and the matching simulation-only command response.
+- Recorded five heartbeat uptimes spanning 121 seconds with 30–31 second differences,
+  without claiming a long-term soak or physical actuator operation.
+- Updated project memory and build guidance, including migration for existing sdkconfig
+  and a separate configuration-only reproducibility check that keeps credentials private.
+- Retained the startup connect error, version mismatch and GPIO 32 warning as unresolved.
+- Hardware success was reviewed from Ashley's output using manually corrected local settings.
+  No ESP-IDF build, fresh-defaults runtime test, device operation, C6 update, broker/router
+  mutation, dependency upgrade or PR merge was performed by the assistant in this task.
+
 ## 2026-10-02: Reconcile project memory and approved A + B
 
 - Prepared a commit-pinned source audit and full A–K decision records.

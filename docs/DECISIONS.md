@@ -2,6 +2,33 @@
 
 Record major technical decisions here so future sessions understand why the project is shaped this way.
 
+## 2026-10-03: WIFI-TRANSPORT-001 — preserve the tested C6 remote path
+
+Question: Should the working non-secret Wi-Fi transport choices and successful Pi
+stub-message checkpoint be captured in a targeted PR to `feature/mqtt-manager`?
+
+Answer: Ashley approved preparing that PR with “yes, please!” after the end-to-end
+test passed. Approval covers the defaults and commissioning documentation, excludes
+credentials, and does not authorize merging this PR, changing the router or broker,
+reflashing the C6, upgrading dependencies, or enabling real output control.
+
+Source: Ashley's supplied 2026-10-03 configuration, serial and Pi CLI output, followed
+by the current explicit PR authorization. Recorded: 2026-10-03 (UTC).
+Affected files: sdkconfig.defaults; commissioning checkpoint; BUILD_AND_FLASH_NOTES;
+PROJECT_STATE; PROJECT_CONTEXT; README; NEXT_STEPS; CHANGELOG; RECONCILIATION_AUDIT.
+
+Decision: Disable `ESP_HOST_WIFI_ENABLED`; enable Wi-Fi Remote with its ESP-HOSTED
+backend and ESP32-C6 target, including the separate `ESP_HOSTED_ENABLED` switch.
+Record SDIO slot 1, four-bit bus, 40 MHz, CLK/CMD 18/19, data 14–17 and reset 54.
+Use the visible slot/bus-width choices and slot-specific GPIO inputs, not derived outputs.
+Preserve the five-retry project default; eight retries were only the tested local override.
+
+Supersedes the incorrect `CONFIG_ESP_HOST_WIFI_ENABLED=y` in tracked defaults, not
+the earlier design decision to use two-chip Wi-Fi or keep credentials private.
+Status: implemented in this PR; equivalent local settings passed the supplied hardware
+test. Fresh-defaults build/runtime verification, warning investigation and recovery tests
+remain open. See [the evidence checkpoint](MQTT_COMMISSIONING_2026-10-03.md).
+
 ## 2026-05-03: Use ESP-IDF Instead Of Arduino
 
 Decision: Build the firmware with ESP-IDF.

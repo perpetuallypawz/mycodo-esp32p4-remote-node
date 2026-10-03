@@ -42,6 +42,10 @@ Mycodo must not be installed on the ESP32-P4 board.
 - First-flash, MQTT setup, architecture, safety, and project-memory docs.
 - Build and flash notes for future ESP-IDF testing.
 - A `.gitignore` that excludes build output and common private config files.
+- Real Wi-Fi and bidirectional simulation-only MQTT messaging verified from Ashley's
+  serial/Pi output on 2026-10-03, after correcting the C6 remote/hosted transport settings.
+  Five fresh heartbeat uptimes and a matching `cmd/test` stub acknowledgement were observed.
+  See [the dated checkpoint](MQTT_COMMISSIONING_2026-10-03.md) for limits and warnings.
 
 ## What Is Stubbed Or Simulated
 
@@ -62,9 +66,10 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Inspect the Pi configuration read-only, then prepare and test the approved broker
-security targets before configuring the existing firmware through `idf.py menuconfig`.
-Keep `sdkconfig` private and verify the approved Phase One heartbeat topic.
+Preserve the working private sdkconfig and review the corrected tracked transport defaults.
+Verify a separate fresh configuration from those defaults, investigate the remaining
+startup/version/GPIO warnings, and test recovery before wiring Mycodo inputs.
+Do not reinstall or overwrite the working broker security configuration.
 
 After that, expand the current stub telemetry into a dedicated mock telemetry milestone before connecting real sensors or outputs.
 
@@ -78,6 +83,8 @@ implemented. Read the existing MQTT branch before following older main-based gui
 
 Ashley approved A + B on 2026-10-02: separate `esp32_node01`, `mycodo_app` and
 `mqtt_test` accounts; `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
-existing `mycodo/remote/{node_id}/...` topics for Phase One. The Pi security deployment
-still needs inspection and authentication tests. Priority-aware expanded topics remain
+existing `mycodo/remote/{node_id}/...` topics for Phase One. Supplied Pi output later
+confirmed diagnostic authentication and ACL restriction; current node-to-Pi stub messaging
+also passed. Mycodo application login and listener/firewall exposure remain unverified.
+Priority-aware expanded topics remain
 future V2 design references. See DECISIONS.md and PROJECT_STATE.md.

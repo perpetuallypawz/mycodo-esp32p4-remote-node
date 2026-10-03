@@ -1,5 +1,34 @@
 # Next Steps
 
+## Current checkpoint: real-network stub MQTT passed (2026-10-03)
+
+Ashley supplied successful output from ESP-IDF 5.5.4 source `d098f261` with corrected
+local C6 remote/hosted settings. The Pi received online status, null-valued telemetry,
+five fresh heartbeats and a matching `cmd/test` stub acknowledgement. See
+[MQTT_COMMISSIONING_2026-10-03.md](MQTT_COMMISSIONING_2026-10-03.md).
+
+- [x] Verify C6 SDIO initialization and real Wi-Fi address assignment from serial output.
+- [x] Verify the MQTT session and three subscription acknowledgements.
+- [x] Observe at least three fresh periodic heartbeats on the Phase One topic.
+- [x] Verify Pi -> broker -> firmware -> broker -> Pi simulation-only response.
+- [x] Record the non-secret working transport settings in tracked defaults for review.
+- [ ] Review this defaults/evidence PR into `feature/mqtt-manager`; do not merge main
+      or separate PR 3 implicitly. Reconcile overlapping memory docs when PR 3 is integrated.
+- [ ] Generate a separate fresh config from tracked defaults and inspect it, then separately
+      build/test that configuration. Preserve the working private sdkconfig throughout.
+- [ ] Investigate startup `ESP_ERR_WIFI_CONN`, C6 version-reporting/compatibility warning
+      and the GPIO 32 warning. Do not suppress warnings or blindly reflash the coprocessor.
+- [ ] Plan and test cold boots, an extended soak, broker restart, node-loss Last Will
+      and Wi-Fi retry exhaustion/recovery separately, with actuators disconnected.
+- [ ] Verify listener/firewall reachability and the actual node account mapping privately.
+- [ ] Verify `mycodo_app` in its actual client and installed Mycodo MQTT input/parser.
+- [ ] Design and test receiver-side stale detection; a 90-second threshold is still proposed.
+
+Suggested commit message: `Fix C6 hosted Wi-Fi defaults and record MQTT commissioning`
+
+This checkpoint proves transport and stub handling, not production reliability, HMI
+outbound actuator requests, real sensor values, real controls or a latency guarantee.
+
 ## Current reconciliation checkpoint
 
 The documentation below is based on MQTT implementation baseline
@@ -12,13 +41,15 @@ use current GitHub refs for the final feature/reconciliation branch SHAs.
 
 - [x] Record approval A + B and reconcile governing documentation together.
 - [x] Review and authorize PR 2 for integration into the MQTT branch.
-- [ ] Inspect the current Pi package/service/listener/security-file plan read-only.
+- [x] Inspect Pi packages/service, initial listeners, security-file ownership and account names
+      from supplied CLI evidence; final loaded-file and firewall review remains open.
 - [ ] Back up inspected configuration and plan migration to `esp32_node01`, `mycodo_app`,
       `mqtt_test`, `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
       preserve working access and never overwrite an existing password file.
-- [ ] Correct the broker setup sequence and validate login, anonymous rejection and forbidden topics.
-- [ ] Privately configure existing menuconfig settings; keep root mycodo/remote and heartbeat 30 s.
-- [ ] Build/flash the confirmed port and verify three fresh heartbeats on the current topic.
+- [x] Validate diagnostic login, anonymous/wrong-password rejection and forbidden-topic denial
+      from supplied output. Broker documentation remains in separate PR 3.
+- [x] Privately configure existing menuconfig settings; keep root mycodo/remote and heartbeat 30 s.
+- [x] Build/flash the confirmed port and verify three fresh heartbeats on the current topic.
 - [ ] Validate Mycodo input fields and implement/test receipt-age stale detection.
 - [ ] Test broker restart separately from Wi-Fi retry exhaustion and node power loss.
 - [ ] Decide future V2 grammar, migration/rollback plan and priority tiers explicitly;
@@ -29,7 +60,8 @@ use current GitHub refs for the final feature/reconciliation branch SHAs.
 - [ ] Design/validate HMI outbound requests and each actuator interface before real control.
 
 The implementation backlog follows. Historical checked items record previous work and do not
-claim current real-network commissioning. PROJECT_STATE.md is the consolidated entry point.
+claim production acceptance. The dated checkpoint above records the new real-network
+evidence. PROJECT_STATE.md is the consolidated entry point.
 
 ## Implementation backlog
 
@@ -93,7 +125,9 @@ Suggested commit message: `Add boot screen scaffold`
 
 ## Milestone: Wi-Fi
 
-Status: Implemented and hardware-verified with safe placeholder credentials. Real AP connection still needs private local `sdkconfig` values.
+Status: Implemented; real AP connection verified from supplied serial output on
+2026-10-03 with corrected C6 transport and private local `sdkconfig` values.
+The fresh-defaults reproducibility check and warning review remain open.
 
 - [x] Add Wi-Fi station initialization.
 - [x] Load safe placeholder settings first.
@@ -104,13 +138,16 @@ Status: Implemented and hardware-verified with safe placeholder credentials. Rea
 - [x] Increase the single factory app partition size with a project-local `partitions.csv` so the display + Wi-Fi firmware fits.
 - [x] Align the image header with the board's physical 32 MB flash and re-verify boot on `COM3`.
 - [x] Rebuild, flash on `COM3`, and monitor the Wi-Fi startup and retry logs.
-- [ ] Replace the placeholder SSID and password locally through `idf.py menuconfig` and confirm a successful real AP connection.
+- [x] Replace placeholder credentials privately and confirm a real AP connection from
+      supplied serial output. Do not commit or share the credential-bearing sdkconfig.
 
 Suggested commit message: `Add Wi-Fi manager`
 
 ## Milestone: MQTT
 
-Status: Implemented and hardware-verified for safe startup behavior. Real broker connection still needs private local Wi-Fi and MQTT settings.
+Status: Implemented; real broker connection and bidirectional stub messaging verified
+from supplied serial/Pi output on 2026-10-03. Mycodo application and recovery testing
+are separate unfinished checkpoints.
 
 - [x] Add ESP-IDF MQTT client setup.
 - [x] Add safe menuconfig-backed MQTT broker settings.
@@ -125,7 +162,8 @@ Status: Implemented and hardware-verified for safe startup behavior. Real broker
 - [x] Rebuild the privacy-hardened firmware with the existing ESP-IDF 5.5.4 `esp32p4` configuration. All 4 incremental Ninja steps passed on 2026-09-20.
 - [x] Merge refreshed `origin/main` at `6038a21` into `feature/mqtt-manager` while preserving the MQTT and network-privacy work. The merged firmware completed all 1,992 ESP-IDF 5.5.4 build steps successfully on 2026-09-20 and was not flashed.
 - [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
-- [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
+- [x] Configure private Wi-Fi/MQTT settings and confirm a broker connection to Pi Mosquitto,
+      Pi-received periodic heartbeat/telemetry and a matching simulation-only response.
 
 Suggested commit message: `Add MQTT manager`
 

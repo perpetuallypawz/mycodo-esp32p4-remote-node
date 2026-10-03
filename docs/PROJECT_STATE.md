@@ -1,16 +1,34 @@
 # Project State
 
-Recorded: 2026-10-02 (America/Phoenix). A + B approved documentation reconciliation.
-This snapshot describes the audited baseline; it is not a verified deployment.
+Updated: 2026-10-03 (UTC record date). A + B approved documentation reconciliation
+plus real-network commissioning evidence supplied by Ashley.
 
-## Repository baseline
+## Current verified checkpoint
+
+The isolated commissioning worktree used source `d098f261c1ab548c85ad228d5431a07e52897548`
+with corrected private sdkconfig values under ESP-IDF 5.5.4. Supplied serial and Pi
+output verifies C6 SDIO transport, real Wi-Fi address assignment, accepted MQTT session,
+received online status, five fresh periodic heartbeats, null-valued telemetry and a
+matching `cmd/test` simulation-only acknowledgement. The new tracked defaults capture
+the non-secret working transport choices; a fresh build from them remains to be tested.
+
+The assistant reviewed supplied output, not the devices directly. Mycodo application
+integration, actual node username mapping, real sensors/outputs, failure recovery,
+extended stability and listener/firewall reachability are not established by this test.
+Startup `ESP_ERR_WIFI_CONN`, coprocessor-version mismatch and GPIO 32 warnings remain
+open. See [MQTT_COMMISSIONING_2026-10-03.md](MQTT_COMMISSIONING_2026-10-03.md).
+
+## Historical reconciliation baseline and current source
 
 - Repository: `perpetuallypawz/mycodo-esp32p4-remote-node`.
 - main: `6038a2114470bcd4fe170acde5c92e9ef0d08504`.
 - MQTT implementation baseline: `aa18533cb7caf94af830689c0b00e5ee548f8f8a` on `feature/mqtt-manager`.
+- PR 2 merged to `feature/mqtt-manager`: `d098f261c1ab548c85ad228d5431a07e52897548`;
+  this was also the tested source baseline. Confirm current remote refs before work.
 - Existing open review: https://github.com/perpetuallypawz/mycodo-esp32p4-remote-node/pull/1.
 
-The MQTT branch is four commits ahead of main. Do not recreate its MQTT manager.
+At the historical implementation audit the MQTT branch was four commits ahead of main.
+Do not recreate its MQTT manager.
 Documentation reconciliation is recorded in PR 2 from
 `reconcile/mqtt-project-state-2026-10-02` to `feature/mqtt-manager`, based on the MQTT
 implementation baseline. Formal review passed and Ashley authorized that merge on
@@ -51,8 +69,9 @@ are implementation audit snapshots, not a claim that a branch still has that HEA
 
 No real sensor drivers, output execution, interactive touch controls, command expiry,
 deduplication, physical feedback, independent critical queues or receiver stale timer.
-The historical build passed; the current real-network connection is not verified here.
-S01/S04 report Pi IP, broker runtime and open testing; these claims need current CLI evidence.
+Real-network stub messaging is now verified by the supplied output described above.
+This does not prove production reliability or Mycodo application operation. Earlier
+S01/S04 reports do not replace the dated CLI evidence.
 Passwords, SSIDs and broker endpoints remain private local configuration.
 Approved account identifiers below are documented; actual credentials remain private.
 Do not store a fixed live LAN address in the committed state register.
@@ -61,15 +80,18 @@ Do not store a fixed live LAN address in the committed state register.
 
 A and B are approved below. P0–P3 versus P0–P4 remains unresolved; the four-tier
 scheme is proposed. The 90-second stale threshold needs a decision and receiver logic.
-A 250 ms deadline is unapproved and unproven. Exact ACL rules and listener binding
-await inspection. Actuator interfaces, chamber mapping and Temtop data access are open.
+A 250 ms deadline is unapproved and unproven. Earlier CLI output supplied ACL rules;
+loaded-file/listener/firewall review remains open. Actuator interfaces, chamber mapping
+and Temtop data access are open.
 Repository history reports KLAYERS hardware naming, while current project text and the
 implemented display software use the Waveshare 7B BSP/name. Confirm the printed physical
 board vendor/model before changing the canonical hardware label. The functional name
 `ESP32-P4 Remote HMI Node` and logical ID `remote-node-01` remain stable either way.
 
-Next: gather read-only Pi configuration evidence before preparing a concrete broker
-migration and authenticated commissioning SOP.
+Next: review the transport-defaults change, verify fresh configuration generation without
+touching private sdkconfig, then investigate warnings and test recovery before Mycodo
+input integration. Separate PR 3 records the earlier broker-authentication checkpoint;
+its merge is not assumed by this snapshot.
 See RECONCILIATION_AUDIT.md and DECISIONS.md. Do not re-ask A–K.
 
 Inventory backlog: add two December 2025 Midwest Grow Kits Mushroom Ecosphere 3.0
@@ -85,13 +107,16 @@ kits to the current tracker after locating it. No inventory spreadsheet was modi
 
 Approved password database: `/etc/mosquitto/mycodo.passwd`.
 Approved ACL: `/etc/mosquitto/mycodo.acl`.
-These are canonical design targets. Their presence, loaded configuration, credentials,
-permissions and successful authentication are not verified on the Pi.
+These are canonical design targets. Later supplied output confirms both files as
+`root:mosquitto` mode `640`, all three account names, successful protected `mqtt_test`
+login, anonymous/wrong-password rejection and diagnostic write restriction. The node's
+MQTT session works, but its username is not disclosed by the startup log. Actual
+`mycodo_app` client login and loaded-file/listener/firewall details still require evidence.
 Inspect and back up the existing configuration before a planned migration; preserve
 working access until the approved targets pass tests. Approval does not authorize
 overwriting an existing password database or prove an ACL has been installed.
-No password or live broker address belongs in Git. Exact ACL rules and listener binding
-remain to be reviewed after discovery; the diagnostic role is not automatically an admin.
+No password or live broker address belongs in Git. Preserve the supplied limited
+diagnostic role; current loaded-file/listener/firewall review remains open.
 
 ## Approved B: Phase One namespace (2026-10-02)
 
