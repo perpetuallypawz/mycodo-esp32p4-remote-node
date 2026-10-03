@@ -39,6 +39,8 @@ Mycodo must not be installed on the ESP32-P4 board.
 - Safe example configuration under `config/`.
 - MQTT topic notes.
 - Sample MQTT JSON payloads.
+- A secured Pi-hosted Mosquitto deployment with anonymous access rejected and the
+  least-privilege `mqtt_test` ACL verified by allowed and forbidden publish tests.
 - First-flash, MQTT setup, architecture, safety, and project-memory docs.
 - Build and flash notes for future ESP-IDF testing.
 - A `.gitignore` that excludes build output and common private config files.
@@ -62,9 +64,9 @@ The manager files log where future behavior belongs so the project can grow one 
 
 Recommended next task:
 
-Inspect the Pi configuration read-only, then prepare and test the approved broker
-security targets before configuring the existing firmware through `idf.py menuconfig`.
-Keep `sdkconfig` private and verify the approved Phase One heartbeat topic.
+Capture the final username-only broker-account readback, then configure the existing
+firmware through `idf.py menuconfig`. Keep `sdkconfig` private and verify
+`esp32_node01` authentication plus three fresh Phase One heartbeat publications.
 
 After that, expand the current stub telemetry into a dedicated mock telemetry milestone before connecting real sensors or outputs.
 
@@ -79,5 +81,6 @@ implemented. Read the existing MQTT branch before following older main-based gui
 Ashley approved A + B on 2026-10-02: separate `esp32_node01`, `mycodo_app` and
 `mqtt_test` accounts; `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
 existing `mycodo/remote/{node_id}/...` topics for Phase One. The Pi security deployment
-still needs inspection and authentication tests. Priority-aware expanded topics remain
-future V2 design references. See DECISIONS.md and PROJECT_STATE.md.
+now has verified local authentication behavior and a tested least-privilege diagnostic ACL.
+ESP32-P4 and Mycodo client authentication remain unverified. Priority-aware expanded topics
+remain future V2 design references. See DECISIONS.md and PROJECT_STATE.md.

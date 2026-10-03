@@ -7,13 +7,23 @@ audited feature/mqtt-manager branch, not main. Do not implement it again from S0
 Source-confirmed root: `mycodo/remote`; expanded heartbeat:
 `mycodo/remote/remote-node-01/heartbeat`. Inbound commands are simulation-only.
 
-## First checkpoint is read-only discovery
+## Verified broker checkpoint (2026-10-02)
 
-Inspect installed package version, service state, actual listeners, included config files,
-password_file/acl_file paths and service drop-ins on the Pi. Do not display password hashes.
-S02 reported a failed password-file creation; S01/S04 later report open broker testing.
-Neither supplies current raw CLI evidence. Treat installed addresses/accounts as unverified.
-Keep live addresses and secrets in private local configuration; do not copy them into Git.
+User-supplied Pi CLI evidence established:
+
+- Mosquitto and client packages `2.0.21-1`; service active and enabled; runtime 2.0.21.
+- TCP 1883 listening on IPv4 and IPv6. Firewall/interface exposure beyond localhost
+  remains unverified.
+- `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl` owned by
+  `root:mosquitto` with mode `640`.
+- Anonymous and deliberately incorrect-password connections rejected.
+- Protected `mqtt_test` login accepted and able to read `$SYS/broker/version`.
+- Exact `mycodo/remote/remote-node-01/cmd/test` publish accepted with MQTT v5 PUBACK
+  reason 16 (no matching subscribers); `control/test` denied with reason 135.
+
+Keep live addresses, passwords and hashes in private local configuration; do not copy them
+into Git. The evidence verifies broker authentication and the diagnostic ACL, not the
+ESP32-P4 or Mycodo application clients.
 
 ## Approved A: MQTT security target (2026-10-02)
 
@@ -25,26 +35,32 @@ Keep live addresses and secrets in private local configuration; do not copy them
 
 Approved password database: `/etc/mosquitto/mycodo.passwd`.
 Approved ACL: `/etc/mosquitto/mycodo.acl`.
-These are canonical design targets. Their presence, loaded configuration, credentials,
-permissions and successful authentication are not verified on the Pi.
-Inspect and back up the existing configuration before a planned migration; preserve
-working access until the approved targets pass tests. Approval does not authorize
-overwriting an existing password database or prove an ACL has been installed.
-No password or live broker address belongs in Git. Exact ACL rules and listener binding
-remain to be reviewed after discovery; the diagnostic role is not automatically an admin.
+These canonical files are deployed with verified permissions. The loaded diagnostic policy
+allows `mqtt_test` to read `$SYS/broker/#` and the node tree and to write only the exact
+`mycodo/remote/remote-node-01/cmd/test` topic. The HMI writes its five publication topics
+and reads the three command trees; Mycodo has the inverse access. No password or live broker
+address belongs in Git. The diagnostic role is not an administrator.
 
 The older `esp32_remote_01` and `/etc/mosquitto/passwd` recommendations are
 superseded as canonical targets by decision MQTT-SECURITY-001. An existing deployment
 using them must be inspected and migrated deliberately. Never use `mosquitto_passwd -c`
 on an existing database. Select one coherent listener plan after inspecting active includes.
 
-## Broker test before board test
+## Broker tests completed before board test
 
-After approved configuration changes, validate legitimate login, anonymous denial and
-unauthorized-topic denial separately. TCP reachability alone is not authentication proof.
-Use supported protected CLI client config instead of literal passwords in command arguments.
-Do not paste the S01/S04 span markers or collapsed ACL/listener lines into a terminal.
-Wildcard binding can include overlay interfaces; assess actual exposure and firewall rules.
+Legitimate `mqtt_test` login, anonymous denial, incorrect-password denial, the allowed
+test publish and an unauthorized control publish were tested separately. TCP reachability
+alone was not treated as authentication proof. The working CLI credential is stored in
+protected per-user Mosquitto client configuration files with mode `600`; do not reveal
+their contents. Wildcard binding can include overlay interfaces, so assess actual exposure
+and firewall rules before treating the listener as LAN-only.
+
+One evidence gap remains before client commissioning: capture a username-only readback
+confirming all three approved accounts without displaying password hashes:
+
+```bash
+sudo awk -F: 'NF {print $1}' /etc/mosquitto/mycodo.passwd
+```
 
 ## Existing firmware commissioning
 
@@ -73,10 +89,10 @@ authorization, per-device interfaces, command expiry/duplicate handling, safe ou
 and physical/process feedback are unimplemented. Do not energize real outputs from a stub
 acknowledgement or claim priority compliance before measured failure/burst testing.
 
-## Read-only Pi evidence commands
+## Repeatable read-only Pi evidence commands
 
-Run one line at a time on the Pi. Review identifiers privately before sharing.
-Do not display password-file contents.
+Use these only for a later audit or diagnosis. Run one line at a time on the Pi. Review
+identifiers privately before sharing. Do not display password-file contents.
 
 ```bash
 hostname

@@ -346,10 +346,34 @@ derived from S01/S04. Approval date: 2026-10-02 (America/Phoenix).
 Affected files: PROJECT_STATE, README, PROJECT_CONTEXT, ARCHITECTURE, setup,
 BUILD_AND_FLASH_NOTES, NEXT_STEPS, CHANGELOG, topics and RECONCILIATION_AUDIT.
 Supersedes: `esp32_remote_01` and `/etc/mosquitto/passwd` as recommended canonical targets.
-Status: approved design; live installation and authentication unverified.
-Do not destroy an existing working configuration. Inspect, back up, plan migration and
-test legitimate access, anonymous rejection and unauthorized-topic rejection first.
-Exact ACL rules, listener configuration and credentials are separate deployment details.
+Status: approved design and deployed file targets. Local authentication plus the
+`mqtt_test` ACL were verified on 2026-10-02; individual HMI and Mycodo client
+authentication remain pending. Exact access is recorded in MQTT-ACL-001 below.
+
+## 2026-10-02: MQTT-ACL-001 — deployed Phase One access
+
+Question: What least-privilege topic access should the three approved Phase One accounts
+receive on the current `remote-node-01` tree?
+
+Decision:
+
+- `esp32_node01` writes node status, heartbeat, telemetry, event and log topics; it reads
+  the node `cmd/#`, `config/#` and `control/#` trees.
+- `mycodo_app` reads those five node publication topics and writes the three node command
+  trees.
+- `mqtt_test` reads `$SYS/broker/#` and the node tree, but writes only the exact
+  `mycodo/remote/remote-node-01/cmd/test` topic.
+- Anonymous access is disabled. The listener remains plain TCP 1883 for the trusted local
+  network and must not be exposed directly to the internet.
+
+Source: user-supplied ACL and Pi CLI evidence on 2026-10-02 (America/Phoenix).
+Affected files: PROJECT_STATE, PROJECT_CONTEXT, ARCHITECTURE, setup,
+BUILD_AND_FLASH_NOTES, NEXT_STEPS, CHANGELOG, topics and RECONCILIATION_AUDIT.
+Status: deployed. Broker behavior verified anonymous denial, incorrect-password denial,
+`mqtt_test` login and broker-version read, acceptance of `cmd/test` (MQTT v5 PUBACK
+reason 16: no matching subscribers), and denial of `control/test` (reason 135: not
+authorized). The HMI and Mycodo application logins are not yet end-to-end verified.
+No secret, hash or private broker address is part of this decision record.
 
 ## 2026-10-02: MQTT-NAMESPACE-001 — approval B
 

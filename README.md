@@ -347,6 +347,7 @@ Also update any relevant documentation when a meaningful code, configuration, wi
 
 Read [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md) first and use the review matrix in
 [docs/RECONCILIATION_AUDIT.md](docs/RECONCILIATION_AUDIT.md). The existing MQTT manager
-is implemented; current network commissioning and real output control remain unverified.
-Approval A defines three account/file targets; approval B retains the Phase One topic tree.
-Follow the setup document for read-only discovery and authenticated commissioning.
+is implemented. Pi-hosted broker authentication and the least-privilege diagnostic ACL
+are verified; ESP32-P4/Mycodo client commissioning and real output control remain
+unverified. Approval A defines three account/file targets; approval B retains the Phase One
+topic tree. Follow the setup document for the evidence boundary and remaining client tests.

@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-10-02: Verify Mosquitto authentication and Phase One ACL
+
+- Recorded Mosquitto and client packages `2.0.21-1`, active/enabled service state and
+  runtime version 2.0.21 from user-supplied Pi CLI evidence.
+- Recorded `root:mosquitto` ownership and mode `640` for
+  `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`.
+- Documented the deployed least-privilege ACL for `esp32_node01`, `mycodo_app` and
+  `mqtt_test` without copying passwords, hashes or a private broker address.
+- Verified that anonymous and deliberately incorrect-password connections are rejected.
+- Verified that `mqtt_test` can read the broker version and publish only to its exact
+  `mycodo/remote/remote-node-01/cmd/test` test command.
+- Interpreted MQTT v5 PUBACK reason 16 as accepted with no matching subscribers and
+  reason 135 on `control/test` as the expected ACL denial.
+- Left ESP32-P4 and Mycodo application authentication, real heartbeat flow and external
+  listener/firewall exposure as explicit follow-up checks.
+- Documentation only: no firmware, Pi configuration, secrets or main-branch merge was
+  performed by this repository update.
+
 ## 2026-10-02: Reconcile project memory and approved A + B
 
 - Prepared a commit-pinned source audit and full A–K decision records.

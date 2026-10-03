@@ -27,6 +27,22 @@ mycodo/remote/remote-node-01
 | Mycodo to ESP32-P4 | `mycodo/remote/{node_id}/config/#` | Runtime config topics |
 | Mycodo to ESP32-P4 | `mycodo/remote/{node_id}/control/#` | Future control topics |
 
+## Deployed Phase One ACL
+
+For `remote-node-01`, the broker authorizes:
+
+| Principal | Publish/write | Subscribe/read |
+| --- | --- | --- |
+| `esp32_node01` | `status`, `heartbeat`, `telemetry`, `event`, `log` | `cmd/#`, `config/#`, `control/#` |
+| `mycodo_app` | `cmd/#`, `config/#`, `control/#` | `status`, `heartbeat`, `telemetry`, `event`, `log` |
+| `mqtt_test` | exact `cmd/test` only | `$SYS/broker/#` and `mycodo/remote/remote-node-01/#` |
+
+Anonymous and incorrect-password connections were rejected. With `mqtt_test`, the exact
+`cmd/test` publish returned MQTT v5 reason 16 (accepted; no matching subscribers), while
+`control/test` returned reason 135 (not authorized). HMI and Mycodo application client
+authentication remain to be verified. This ACL does not create an outbound HMI
+actuator-request design.
+
 ## Payload Format
 
 Use JSON payloads. Keep messages small, explicit, and versioned when possible.
@@ -68,5 +84,5 @@ tests and rollback plan. This approval does not choose P0–P3 versus P0–P4, e
 a latency deadline, or implement priority handling.
 
 Approved account and file targets are defined in decision MQTT-SECURITY-001 and
-[the setup notes](../docs/mycodo_mqtt_setup.md). ACL rules must use the approved
+[the setup notes](../docs/mycodo_mqtt_setup.md). The deployed ACL uses the approved
 Phase One tree; outbound HMI requests require a later explicit topic/authorization design.
