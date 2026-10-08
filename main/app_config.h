@@ -15,7 +15,6 @@
 
 /* Default node identity used in example MQTT topics. */
 #define APP_DEFAULT_NODE_ID "remote-node-01"
-#define APP_MQTT_TOPIC_PREFIX "mycodo/remote-node-01"
 
 /* First display milestone settings. */
 #define APP_DISPLAY_BOOT_BRIGHTNESS_PERCENT 85
@@ -32,6 +31,20 @@
 #define APP_WIFI_DEFAULT_SSID CONFIG_APP_WIFI_SSID
 #define APP_WIFI_DEFAULT_PASSWORD CONFIG_APP_WIFI_PASSWORD
 #define APP_WIFI_MAXIMUM_RETRY_COUNT CONFIG_APP_WIFI_MAXIMUM_RETRY_COUNT
+
+/*
+ * Safe placeholder MQTT settings.
+ *
+ * Keep these values fake or empty in Git. Real local broker settings should be
+ * supplied through the ignored sdkconfig file via 'idf.py menuconfig'.
+ */
+#define APP_MQTT_PLACEHOLDER_BROKER_HOST "CHANGE_ME_MQTT_HOST"
+#define APP_MQTT_DEFAULT_BROKER_HOST CONFIG_APP_MQTT_BROKER_HOST
+#define APP_MQTT_DEFAULT_BROKER_PORT CONFIG_APP_MQTT_BROKER_PORT
+#define APP_MQTT_DEFAULT_USERNAME CONFIG_APP_MQTT_USERNAME
+#define APP_MQTT_DEFAULT_PASSWORD CONFIG_APP_MQTT_PASSWORD
+#define APP_MQTT_DEFAULT_BASE_TOPIC_ROOT CONFIG_APP_MQTT_BASE_TOPIC_ROOT
+#define APP_MQTT_HEARTBEAT_INTERVAL_SECONDS CONFIG_APP_MQTT_HEARTBEAT_INTERVAL_SECONDS
 
 /* Placeholder loop timing while real tasks are not implemented. */
 #define APP_MAIN_LOOP_DELAY_MS 5000

@@ -1,5 +1,38 @@
 # Next Steps
 
+## Current reconciliation checkpoint
+
+The documentation below is based on MQTT implementation baseline
+`aa18533cb7caf94af830689c0b00e5ee548f8f8a`. Refresh remote refs before the next task.
+Do not recreate MQTT. A–K decisions are recovered in DECISIONS.md. A + B were
+approved on 2026-10-02. Documentation review branch: `reconcile/mqtt-project-state-2026-10-02`.
+The branch is based on the SHA above and targets `feature/mqtt-manager`. PR 2 passed
+formal review and Ashley authorized its merge on 2026-10-02. This does not merge main;
+use current GitHub refs for the final feature/reconciliation branch SHAs.
+
+- [x] Record approval A + B and reconcile governing documentation together.
+- [x] Review and authorize PR 2 for integration into the MQTT branch.
+- [ ] Inspect the current Pi package/service/listener/security-file plan read-only.
+- [ ] Back up inspected configuration and plan migration to `esp32_node01`, `mycodo_app`,
+      `mqtt_test`, `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
+      preserve working access and never overwrite an existing password file.
+- [ ] Correct the broker setup sequence and validate login, anonymous rejection and forbidden topics.
+- [ ] Privately configure existing menuconfig settings; keep root mycodo/remote and heartbeat 30 s.
+- [ ] Build/flash the confirmed port and verify three fresh heartbeats on the current topic.
+- [ ] Validate Mycodo input fields and implement/test receipt-age stale detection.
+- [ ] Test broker restart separately from Wi-Fi retry exhaustion and node power loss.
+- [ ] Decide future V2 grammar, migration/rollback plan and priority tiers explicitly;
+      Phase One stays on `mycodo/remote/{node_id}/...` under approval B.
+- [ ] Confirm the printed physical board vendor/model before reconciling KLAYERS versus
+      Waveshare naming; keep the functional HMI name and `remote-node-01` unchanged.
+- [ ] Implement CI documentation checks with full-PR-diff coverage.
+- [ ] Design/validate HMI outbound requests and each actuator interface before real control.
+
+The implementation backlog follows. Historical checked items record previous work and do not
+claim current real-network commissioning. PROJECT_STATE.md is the consolidated entry point.
+
+## Implementation backlog
+
 This file should be updated after every meaningful task so the next session knows where to continue.
 
 ## Commit Message Suggestions
@@ -33,6 +66,7 @@ Status: Completed.
 - [x] Create the first commit: `Initial repo scaffold`.
 - [x] Do a first ESP-IDF build check after ESP-IDF is installed. Verified on 2026-05-03 for target `esp32p4`.
 - [x] Commit the generated `dependencies.lock` file so managed component versions stay reproducible across future builds.
+- [x] Recover the local target configuration after `sdkconfig` was missing and complete a clean ESP-IDF 5.5.4 build on 2026-08-22. The regenerated config targets `esp32p4`, all `2003` build steps passed, and the firmware image remains `0x145990` bytes.
 
 Suggested commit message: `Initial repo scaffold`
 
@@ -65,6 +99,7 @@ Status: Implemented and hardware-verified with safe placeholder credentials. Rea
 - [x] Load safe placeholder settings first.
 - [x] Decide how private local Wi-Fi credentials will be provided. Current choice: `idf.py menuconfig`, which stores them in the ignored `sdkconfig` file.
 - [x] Show Wi-Fi connection state in logs and UI.
+- [x] Keep the configured SSID and assigned IP address out of serial logs and UI state while preserving generic connection states, retry counts, and reason codes.
 - [x] Add the hosted Wi-Fi component dependencies required by `esp32p4`.
 - [x] Increase the single factory app partition size with a project-local `partitions.csv` so the display + Wi-Fi firmware fits.
 - [x] Align the image header with the board's physical 32 MB flash and re-verify boot on `COM3`.
@@ -75,13 +110,22 @@ Suggested commit message: `Add Wi-Fi manager`
 
 ## Milestone: MQTT
 
-Status: Not started.
+Status: Implemented and hardware-verified for safe startup behavior. Real broker connection still needs private local Wi-Fi and MQTT settings.
 
-- [ ] Add ESP-IDF MQTT client setup.
-- [ ] Connect to Mosquitto on the Raspberry Pi 4B.
-- [ ] Subscribe to command topics.
-- [ ] Publish connection status.
-- [ ] Add reconnect behavior.
+- [x] Add ESP-IDF MQTT client setup.
+- [x] Add safe menuconfig-backed MQTT broker settings.
+- [x] Start MQTT only after Wi-Fi is connected.
+- [x] Subscribe to command topics.
+- [x] Publish connection status and heartbeat messages.
+- [x] Publish stub telemetry with null sensor values.
+- [x] Add reconnect behavior through the ESP-MQTT client.
+- [x] Log inbound command/config/control topics and publish stub acknowledgements instead of executing controls.
+- [x] Show MQTT status on the existing boot/status screen.
+- [x] Keep the broker hostname or IP and broker port out of serial logs, UI state, and published MQTT payloads.
+- [x] Rebuild the privacy-hardened firmware with the existing ESP-IDF 5.5.4 `esp32p4` configuration. All 4 incremental Ninja steps passed on 2026-09-20.
+- [x] Merge refreshed `origin/main` at `6038a21` into `feature/mqtt-manager` while preserving the MQTT and network-privacy work. The merged firmware completed all 1,992 ESP-IDF 5.5.4 build steps successfully on 2026-09-20 and was not flashed.
+- [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
+- [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
 
 Suggested commit message: `Add MQTT manager`
 
@@ -110,9 +154,10 @@ Suggested commit message: `Add LVGL home screen`
 
 ## Milestone: Mycodo Integration
 
-Status: Not started.
+Status: Reconciled setup plan documented; live Mycodo integration not verified.
 
-- [ ] Document Mycodo MQTT input setup.
+- [x] Document discovery-first MQTT setup and approved account/topic targets.
+- [ ] Verify Mycodo MQTT input setup against the installed version.
 - [ ] Document Mycodo command publishing setup.
 - [ ] Confirm topic names and JSON payloads.
 - [ ] Add acknowledgement handling.

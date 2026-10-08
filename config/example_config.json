@@ -16,7 +16,7 @@
     "port": 1883,
     "username": "YOUR_MQTT_USERNAME_IF_USED",
     "password": "YOUR_MQTT_PASSWORD_DO_NOT_COMMIT_REAL_VALUES",
-    "base_topic": "mycodo/remote-node-01"
+    "base_topic": "mycodo/remote/remote-node-01"
   },
   "telemetry": {
     "publish_interval_seconds": 30

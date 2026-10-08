@@ -20,10 +20,12 @@ void app_state_init(app_state_t *state)
 
     memset(state, 0, sizeof(*state));
     state->network_state = APP_NETWORK_DISCONNECTED;
+    state->mqtt_state = APP_MQTT_WAITING_FOR_WIFI;
     state->safe_mode_enabled = true;
     state->config_loaded = false;
     snprintf(state->node_id, sizeof(state->node_id), "%s", APP_DEFAULT_NODE_ID);
     app_state_set_network_detail(state, "Wi-Fi not started");
+    app_state_set_mqtt_detail(state, "waiting for Wi-Fi");
     app_state_set_status(state, "scaffold initialized");
 }
 
@@ -47,6 +49,15 @@ void app_state_set_network_detail(app_state_t *state, const char *detail)
     }
 
     app_state_copy_string(state->network_detail, sizeof(state->network_detail), detail);
+}
+
+void app_state_set_mqtt_detail(app_state_t *state, const char *detail)
+{
+    if (state == NULL) {
+        return;
+    }
+
+    app_state_copy_string(state->mqtt_detail, sizeof(state->mqtt_detail), detail);
 }
 
 void app_state_set_status(app_state_t *state, const char *message)
