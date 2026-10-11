@@ -174,8 +174,9 @@ Separate clients share Wi-Fi, broker and CPU; they alone cannot prove a latency 
 Safety behavior must remain local when messaging fails. No real controls may be enabled
 before documented interface, timeout, expiry, duplicate handling and failure tests.
 
-Wildcard listener binding may include an overlay interface; verify actual listener and
-firewall behavior. Explicit LAN binding needs a stable address and recovery testing.
+The listener was observed on TCP 1883 for all IPv4 and IPv6 interfaces. Authentication and
+the diagnostic ACL are active, but host firewall and interface exposure beyond localhost
+remain unverified. Explicit LAN binding would need a stable address and recovery testing.
 
 ## Approved A: MQTT security target (2026-10-02)
 
@@ -187,13 +188,20 @@ firewall behavior. Explicit LAN binding needs a stable address and recovery test
 
 Approved password database: `/etc/mosquitto/mycodo.passwd`.
 Approved ACL: `/etc/mosquitto/mycodo.acl`.
-These are canonical design targets. Their presence, loaded configuration, credentials,
-permissions and successful authentication are not verified on the Pi.
-Inspect and back up the existing configuration before a planned migration; preserve
-working access until the approved targets pass tests. Approval does not authorize
-overwriting an existing password database or prove an ACL has been installed.
-No password or live broker address belongs in Git. Exact ACL rules and listener binding
-remain to be reviewed after discovery; the diagnostic role is not automatically an admin.
+Both files were observed with `root:mosquitto` ownership and mode `640`. Anonymous and
+incorrect-password connections were rejected. A protected `mqtt_test` client read the
+broker version, successfully published to its exact test topic, and was denied on a
+control topic. This verifies loaded authentication and diagnostic authorization; it does
+not yet verify the HMI or Mycodo application clients.
+
+| Principal | Publish/write | Subscribe/read |
+| --- | --- | --- |
+| `esp32_node01` | node `status`, `heartbeat`, `telemetry`, `event`, `log` | node `cmd/#`, `config/#`, `control/#` |
+| `mycodo_app` | node `cmd/#`, `config/#`, `control/#` | node `status`, `heartbeat`, `telemetry`, `event`, `log` |
+| `mqtt_test` | exact node `cmd/test` only | `$SYS/broker/#` and the node tree |
+
+No password, hash or live broker address belongs in Git. The diagnostic role is not an
+administrator, and this ACL does not grant an outbound HMI actuator-request path.
 
 ## Approved B: Phase One namespace (2026-10-02)
 

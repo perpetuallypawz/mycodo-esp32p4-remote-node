@@ -27,11 +27,11 @@ This repository is currently an early firmware scaffold with working display, Wi
 - A later serial-monitor verification on 2026-05-03 showed a clean runtime boot: PSRAM initialization succeeded, the Waveshare BSP reported `Display initialized`, touch was detected, the backlight was set, and `ui_manager` logged that the boot screen was initialized.
 - The user visually confirmed on 2026-05-03 that the boot screen appears on the physical Waveshare LCD, so the first display milestone is now verified both over serial and on hardware.
 
-Before treating the scaffold as board-ready firmware, keep the current display, Wi-Fi, and MQTT path stable while the next milestone adds richer mock telemetry and real broker verification.
+Before treating the scaffold as board-ready firmware, keep the current display, Wi-Fi, and MQTT path stable while the next milestone adds richer mock telemetry and real ESP32-to-broker verification.
 
 The Wi-Fi initialization milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified with safe placeholder credentials. A real AP connection still requires private local credentials in `sdkconfig`.
 
-The MQTT milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified for safe startup behavior. Real broker connection still requires private local Wi-Fi and MQTT settings in `sdkconfig`.
+The MQTT milestone is now source-implemented, build-verified, flashed, and serial-monitor-verified for safe startup behavior. The Pi broker's authentication and diagnostic ACL are verified; the ESP32-P4 connection still requires private local Wi-Fi and MQTT settings in `sdkconfig`.
 
 ## Required Tools
 
@@ -278,7 +278,8 @@ GPIO output control should only be added after the wiring, relay/driver hardware
 
 ## Reconciled commissioning evidence
 
-The latest documented build did not flash the board. It does not establish real broker access.
+The latest documented build did not flash the board. The Pi broker now has verified local
+authentication and diagnostic ACL behavior, but no ESP32-P4 broker session is established.
 Use the existing EIM/toolchain notes; sample C:\Projects paths are not confirmed user paths.
 Verify actual COM port and local repository status first. Do not commit sdkconfig or build images
 containing private credentials. Current privacy-safe Wi-Fi success text is
@@ -289,9 +290,12 @@ On Wi-Fi retry exhaustion, no recovery supervisor is implemented; record the lim
 ## Approved local MQTT settings
 
 Approval A sets the target HMI username to `esp32_node01`; configure its password
-privately only after broker validation. Mycodo uses `mycodo_app`; diagnostics use
+privately. Mycodo uses `mycodo_app`; diagnostics use
 `mqtt_test`. Broker file targets are `/etc/mosquitto/mycodo.passwd` and
-`/etc/mosquitto/mycodo.acl`, with deployment unverified.
+`/etc/mosquitto/mycodo.acl`. Both files were observed with `root:mosquitto` ownership
+and mode `640`; anonymous denial, incorrect-password denial, allowed `mqtt_test`
+publish and forbidden-topic denial passed. A username-only readback confirmed all three
+approved accounts are present; HMI and Mycodo client authentication remain unverified.
 Approval B fixes the Phase One menuconfig root to `mycodo/remote`; do not enter
 the expanded node path there. Heartbeat is `mycodo/remote/remote-node-01/heartbeat`.
-See the setup notes for read-only Pi inspection before any configuration or flashing.
+See the setup notes for the verified broker checkpoint and remaining client tests.

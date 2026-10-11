@@ -2,22 +2,24 @@
 
 ## Current reconciliation checkpoint
 
-The documentation below is based on MQTT implementation baseline
-`aa18533cb7caf94af830689c0b00e5ee548f8f8a`. Refresh remote refs before the next task.
-Do not recreate MQTT. A–K decisions are recovered in DECISIONS.md. A + B were
-approved on 2026-10-02. Documentation review branch: `reconcile/mqtt-project-state-2026-10-02`.
-The branch is based on the SHA above and targets `feature/mqtt-manager`. PR 2 passed
-formal review and Ashley authorized its merge on 2026-10-02. This does not merge main;
-use current GitHub refs for the final feature/reconciliation branch SHAs.
+The current implementation/documentation baseline is
+`d098f261c1ab548c85ad228d5431a07e52897548` on `feature/mqtt-manager`. Refresh
+remote refs before the next task. Do not recreate MQTT. A–K decisions are recovered in
+DECISIONS.md. A + B were approved on 2026-10-02. PR 2 passed formal review, Ashley
+authorized it, and it was merged into `feature/mqtt-manager` at the SHA above. This did
+not merge main; PR 1 remains the later review path to main.
 
 - [x] Record approval A + B and reconcile governing documentation together.
 - [x] Review and authorize PR 2 for integration into the MQTT branch.
-- [ ] Inspect the current Pi package/service/listener/security-file plan read-only.
-- [ ] Back up inspected configuration and plan migration to `esp32_node01`, `mycodo_app`,
-      `mqtt_test`, `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`;
-      preserve working access and never overwrite an existing password file.
-- [ ] Correct the broker setup sequence and validate login, anonymous rejection and forbidden topics.
+- [x] Inspect the current Pi package, service, listener and security-file plan read-only.
+- [x] Migrate to `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl`
+      with mode `640` and `root:mosquitto` ownership.
+- [x] Reject anonymous and incorrect-password connections; verify `mqtt_test` login,
+      allowed `cmd/test` publish and forbidden `control/test` denial.
+- [x] Capture a final username-only readback confirming `esp32_node01`, `mycodo_app`
+      and `mqtt_test` are all present; do not display hashes.
 - [ ] Privately configure existing menuconfig settings; keep root mycodo/remote and heartbeat 30 s.
+- [ ] Verify `esp32_node01` and `mycodo_app` authentication in their actual clients.
 - [ ] Build/flash the confirmed port and verify three fresh heartbeats on the current topic.
 - [ ] Validate Mycodo input fields and implement/test receipt-age stale detection.
 - [ ] Test broker restart separately from Wi-Fi retry exhaustion and node power loss.
@@ -110,7 +112,9 @@ Suggested commit message: `Add Wi-Fi manager`
 
 ## Milestone: MQTT
 
-Status: Implemented and hardware-verified for safe startup behavior. Real broker connection still needs private local Wi-Fi and MQTT settings.
+Status: Implemented and hardware-verified for safe startup behavior. Pi broker
+authentication and the diagnostic ACL are verified; the ESP32-P4 real broker connection
+still needs private local Wi-Fi and MQTT settings.
 
 - [x] Add ESP-IDF MQTT client setup.
 - [x] Add safe menuconfig-backed MQTT broker settings.
@@ -125,6 +129,8 @@ Status: Implemented and hardware-verified for safe startup behavior. Real broker
 - [x] Rebuild the privacy-hardened firmware with the existing ESP-IDF 5.5.4 `esp32p4` configuration. All 4 incremental Ninja steps passed on 2026-09-20.
 - [x] Merge refreshed `origin/main` at `6038a21` into `feature/mqtt-manager` while preserving the MQTT and network-privacy work. The merged firmware completed all 1,992 ESP-IDF 5.5.4 build steps successfully on 2026-09-20 and was not flashed.
 - [x] Build, flash on `COM3`, and confirm that placeholder settings fail safely without breaking the display or Wi-Fi milestones.
+- [x] Secure the Pi broker and verify anonymous denial, incorrect-password denial,
+      allowed diagnostic publish and forbidden-topic denial.
 - [ ] Replace the placeholder Wi-Fi and MQTT settings locally through `idf.py menuconfig` and confirm a successful broker connection to Mosquitto on the Raspberry Pi 4B.
 
 Suggested commit message: `Add MQTT manager`

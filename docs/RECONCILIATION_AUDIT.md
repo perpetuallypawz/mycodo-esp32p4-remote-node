@@ -1,6 +1,8 @@
 # Project Mycodo Reconciliation Audit
 
-Date: 2026-10-02. Status: reconciled documentation; A + B approved, PR review pending. Baseline: `aa18533cb7caf94af830689c0b00e5ee548f8f8a`.
+Date: 2026-10-02. Status: PR 2 merged into `feature/mqtt-manager`; local broker
+authentication and diagnostic ACL verified in follow-up. Original audit baseline:
+`aa18533cb7caf94af830689c0b00e5ee548f8f8a`.
 
 ## Source register
 
@@ -15,17 +17,24 @@ Date: 2026-10-02. Status: reconciled documentation; A + B approved, PR review pe
 
 - S07: current user message “Approve A + B” (2026-10-02, America/Phoenix),
   approving the canonical security model and retention of the Phase One namespace.
+- S08: user-supplied Pi CLI output (2026-10-02, America/Phoenix): package/service/listener
+  inspection, security-file metadata, username-only/ACL output, anonymous and
+  incorrect-password rejection, protected `mqtt_test` broker-version read, allowed
+  `cmd/test` publish and denied `control/test` publish. No password or hash was supplied.
+- S09: final username-only password-database readback (2026-10-02, America/Phoenix)
+  confirmed `esp32_node01`, `mqtt_test` and `mycodo_app` are present.
 
 Code establishes implementation; answers establish user intent; current device output
-establishes deployment. No live Pi/laptop/ESP32 verification occurred in this audit.
+establishes deployment. The original audit had no live Pi/laptop/ESP32 verification; S08
+adds current Pi broker evidence only. No ESP32-P4 or Mycodo end-to-end client test occurred.
 Referenced Drive guides/purchase workbook were not independently re-read as current bytes.
-Current loaded paths and credentials need discovery before deployment changes.
-S07 resolves R05–R07 design targets below; no priority tier count or latency deadline
-is approved. An approved target is not evidence of installation.
+S07 resolves R05–R07 design targets below; S08 verifies the deployed paths and diagnostic
+behavior. No priority tier count or latency deadline is approved.
 
 ## R01 Branch and MQTT implementation
 
-**Repo:** main: placeholder. MQTT branch: real mqtt_manager.c; 4 commits ahead, 0 behind.
+**Repo at follow-up:** main remains at `6038a211`. The MQTT branch contains the real
+`mqtt_manager.c` and PR 2 documentation; it is 8 commits ahead, 0 behind.
 
 **Competing sources:** S02 used main 6038a211 and says to implement MQTT and menuconfig again.
 
@@ -43,10 +52,10 @@ is approved. An approved target is not evidence of installation.
 
 **Ashley answer:** Audit and reconcile before publishing changes.
 
-**Resolution:** PR 2 uses `reconcile/mqtt-project-state-2026-10-02` from the refreshed
-MQTT head and targets `feature/mqtt-manager`. Formal review passed and Ashley authorized
-the PR 2 merge on 2026-10-02. PR 1 remains the later main review path; this authorization
-does not merge PR 1 or main.
+**Resolution:** PR 2 used `reconcile/mqtt-project-state-2026-10-02` and targeted
+`feature/mqtt-manager`. Formal review passed, Ashley authorized the merge, and PR 2 was
+merged as `d098f261c1ab548c85ad228d5431a07e52897548` on 2026-10-02. PR 1 remains
+the later main review path; this did not merge PR 1 or main.
 
 **Destination:** PROJECT_STATE; NEXT_STEPS
 
@@ -99,7 +108,11 @@ Separate future client names from physical node IDs.
 
 **Ashley answer:** Original A–K had no account choice. S07 approval A selects the three-account model.
 
-**Resolution:** Approved MQTT-SECURITY-001 targets HMI `esp32_node01`, Mycodo `mycodo_app`, diagnostics `mqtt_test`. `esp32_remote_01` is superseded as a recommended target. Inspect installed configuration without exposing hashes; preserve working access until an explicit migration is validated. Live accounts are unverified.
+**Resolution:** Approved MQTT-SECURITY-001 targets HMI `esp32_node01`, Mycodo
+`mycodo_app`, diagnostics `mqtt_test`. `esp32_remote_01` is superseded as a recommended
+target. S08 verifies `mqtt_test` authentication; HMI and Mycodo application client
+authentication remain unverified. S09 confirms all three approved account records exist
+without exposing hashes.
 
 **Destination:** PROJECT_STATE; setup; DECISIONS
 
@@ -111,7 +124,11 @@ Separate future client names from physical node IDs.
 
 **Ashley answer:** S07 approval A selects `/etc/mosquitto/mycodo.passwd` and `/etc/mosquitto/mycodo.acl` as canonical targets.
 
-**Resolution:** Approved security file targets supersede `/etc/mosquitto/passwd` as the canonical recommendation, but do not establish loaded files or authorize destructive replacement. Inspect/back up before migration. Never run `mosquitto_passwd -c` on an existing database. Listener filename, binding and exact ACL rules still need review.
+**Resolution:** Approved security file targets supersede `/etc/mosquitto/passwd` as the
+canonical recommendation. S08 verifies both target files at `root:mosquitto` mode `640`
+and proves loaded authentication plus the diagnostic ACL. The listener was observed on all
+IPv4 and IPv6 interfaces at TCP 1883; firewall and non-localhost reachability remain open.
+Never run `mosquitto_passwd -c` on an existing database.
 
 **Destination:** setup; PROJECT_STATE
 
@@ -124,7 +141,10 @@ S01/S04 claim service and LAN tests passed, open mode used and a specific LAN ad
 
 **Ashley answer:** B confirms intended broker location, not authenticated operation.
 
-**Proposal:** Label later claims reported, not live-verified. No raw current CLI evidence is attached. Read-only Pi inspection is the next checkpoint; do not reinstall by default.
+**Resolution:** S08 supplies current raw CLI evidence. Mosquitto/client packages are
+`2.0.21-1`, the service is active/enabled, runtime reports 2.0.21, and localhost
+authentication/authorization tests passed. ESP32-P4 and Mycodo client sessions plus
+listener/firewall exposure are not verified. Do not reinstall by default.
 
 **Destination:** PROJECT_STATE; NEXT_STEPS; setup
 
@@ -329,3 +349,19 @@ no firmware, committed defaults, live Pi settings or workstation files are chang
 Publication verification must compare the new branch against the pinned MQTT base,
 check exact changed paths and read back the approved decision/state/setup documents.
 No ESP-IDF build or runtime test is claimed for this documentation-only task.
+
+## Post-audit deployment evidence
+
+S08 verifies the approved A file targets and the deployed MQTT-ACL-001 policy without
+including secrets. Anonymous and incorrect-password connections returned CONNACK 5. The
+protected diagnostic client authenticated, read the retained broker version, received
+PUBACK reason 16 for its exact allowed test topic, and received reason 135 for the forbidden
+control topic. Reason 16 is a successful publish acknowledgement indicating no matching
+subscriber; reason 135 is not authorized.
+
+S09 closes the username-presence evidence gap for all three approved accounts. It does not
+by itself authenticate the HMI or Mycodo application clients.
+
+This evidence closes the local broker authentication and diagnostic-authorization
+checkpoint only. It does not close ESP32-P4 Wi-Fi/MQTT commissioning, `mycodo_app`
+integration, three-heartbeat observation, listener/firewall exposure or recovery testing.
