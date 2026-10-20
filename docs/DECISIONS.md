@@ -368,3 +368,52 @@ Supersedes: conflicting immediate root-change recommendations in S01/S04/S05 and
 the malformed `mycodo/remote-node-01` path in S02.
 Status: approved design aligned with existing firmware. This does not approve a V2
 grammar, tier count, 250 ms deadline, new QoS policy or deployed safety behavior.
+
+## 2026-10-20: V2-D03 — supervisory control authority (APPROVED; NOT IMPLEMENTED)
+
+Question: In the proposed V2 control architecture, who supervises HMI requests, who
+may execute an actuator action, and where must safety protections remain effective?
+
+Answer: Ashley approved Raspberry Pi/Mycodo as the **initial supervisory authority**.
+The HMI requests actions; it does not directly execute them. Exactly one designated
+execution owner is required for each actuator. Independently effective,
+device-specific safety protections are mandatory.
+
+Source: Ashley's explicit V2-D03 approval in the 2026-10-20 task instruction.
+Approval date: 2026-10-20 (America/Phoenix).
+Scope: V2 architectural principle for supervisory control, request direction,
+single-owner execution, and local safety. It does not alter Phase One firmware,
+deployed permissions, output settings, or commissioning state.
+Affected files: `docs/DECISIONS.md` and `docs/PRIORITY_MQTT_V2_PROPOSAL.md`.
+
+Constraints and evidence boundaries:
+
+- An authenticated MQTT connection identifies a transport principal; it does not
+  authorize an actuator action. Pi/Mycodo must apply application-level authorization
+  to an HMI request before issuing any approved command. Current HMI outbound
+  executable-command publication rights are not established.
+- The approved supervisor evaluates intent; a separately designated execution owner
+  performs an actuator operation only under an approved contract. Designating an
+  owner does not transfer supervisory authority to that owner. The HMI has no
+  approved autonomous fallback, and Pi-to-device authority transfer is not approved.
+- Local, device-specific safety protections must remain effective if Pi/Mycodo,
+  MQTT, Wi-Fi, or a bridge is unavailable. The exact interlocks, timeout rules,
+  failure behavior, and safe state require per-actuator review before real control.
+- Request acceptance, owner-reported operation, and independently verified physical
+  feedback are different evidence. No independent physical actuator feedback is
+  currently established; neither an MQTT acknowledgement nor a device report proves
+  physical operation.
+
+Relationship to existing decisions: MQTT-C2 retains the approved intent for HMI
+actuator requests without granting direct execution or current publication rights.
+MQTT-NAMESPACE-001 keeps the Phase One `mycodo/remote/{node_id}/...` contract; this
+decision approves no new topic grammar or ACL. MQTT-G1 keeps CO2 reserved and
+blocked pending sampling-assembly validation. V2-D03 supersedes only its own OPEN
+authority-principle question in the V2 proposal, not those earlier decisions.
+
+Still unresolved: the execution owner and physical interface for each actuator;
+device/chamber assignments; request, command, acknowledgement, and state schemas;
+application roles and ACL migration; authenticated transport choices; independent
+safety mechanisms and safe states; timing, expiry, duplicate handling, feedback
+sensors, testing, cutover, and rollback. Those remain open under the other V2
+decisions. Status: **APPROVED ARCHITECTURAL PRINCIPLE; NOT IMPLEMENTED OR DEPLOYED**.
